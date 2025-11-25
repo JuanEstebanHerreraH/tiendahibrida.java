@@ -1,4 +1,4 @@
-package com.tienda.modelo.dao;
+package com.com.tienda.modelo.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
