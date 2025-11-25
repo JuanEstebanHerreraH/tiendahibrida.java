@@ -18,7 +18,7 @@ Estructura lista para ampliar catálogo, carrito, API de monedas, panel admin, e
 🚀 Tecnologías Utilizadas
 Backend
 
-Java 22
+Java 22 (Se paso a Java 17)
 
 Jakarta EE 8 (Servlet API)
 
