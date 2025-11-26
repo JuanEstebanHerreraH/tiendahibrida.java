@@ -7,22 +7,46 @@
     <title>Productos</title>
 </head>
 <body>
+
 <h1>Lista de Productos</h1>
 
+<!-- BOTÓN PARA AGREGAR -->
+<a href="agregarProducto.jsp">
+    <button>Agregar Producto</button>
+</a>
+<br><br>
+
 <ul>
-<% 
-    List<Producto> lista =
-        (List<Producto>) request.getAttribute("listaProductos");
+<%
+    List<Producto> lista = (List<Producto>) request.getAttribute("listaProductos");
 
     if (lista != null) {
         for (Producto p : lista) {
 %>
-        <li><%= p.getNombre() %> - $<%= p.getPrecioUSD() %></li>
+
+    <li>
+        <%= p.getNombre() %> - $<%= p.getPrecioUSD() %>
+
+        
+        <a href="editarProducto?id=<%= p.getId() %>">Editar</a>
+
+       
+        <a href="eliminarProducto?id=<%= p.getId() %>"
+           onclick="return confirm('¿Eliminar este producto?');">
+           Eliminar
+        </a>
+    </li>
+
 <%
         }
+    } else {
+%>
+    <li>No hay productos para mostrar.</li>
+<%
     }
 %>
 </ul>
 
 </body>
 </html>
+

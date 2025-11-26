@@ -1,6 +1,6 @@
 package com.com.tienda.modelo.dao;
 
-import com.tienda.modelo.entidades.Usuario;
+import com.com.tienda.modelo.entidades.Usuario;
 import java.sql.*;
 
 public class UsuarioDAO {

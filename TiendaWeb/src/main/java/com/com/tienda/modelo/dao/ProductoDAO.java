@@ -88,4 +88,41 @@ String sql = "INSERT INTO productos "
 
         return p;
     }
+    // ACTUALIZAR PRODUCTO
+public boolean actualizar(Producto p) {
+    String sql = "UPDATE productos SET nombre=?, precio_usd=?, stock=?, categoria=?, imagen_url=? "
+               + "WHERE id=?";
+
+    try (Connection con = ConexionDB.getConexion();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ps.setString(1, p.getNombre());
+        ps.setDouble(2, p.getPrecioUSD());
+        ps.setInt(3, p.getStock());
+        ps.setString(4, p.getCategoria());
+        ps.setString(5, p.getImagenURL());
+        ps.setInt(6, p.getId());
+
+        return ps.executeUpdate() > 0;
+
+    } catch (Exception e) {
+        System.out.println("Error actualizar producto: " + e.getMessage());
+        return false;
+    }
+}
+public boolean eliminar(int id) {
+    String sql = "DELETE FROM productos WHERE id = ?";
+
+    try (Connection con = ConexionDB.getConexion();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ps.setInt(1, id);
+        return ps.executeUpdate() > 0;
+
+    } catch (Exception e) {
+        System.out.println("Error eliminar producto: " + e.getMessage());
+        return false;
+    }
+}
+
 }

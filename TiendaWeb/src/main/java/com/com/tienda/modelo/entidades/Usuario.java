@@ -1,5 +1,5 @@
 
-package com.tienda.modelo.entidades;
+package com.com.tienda.modelo.entidades;
 
 
 public class Usuario {
