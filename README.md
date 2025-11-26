@@ -1,48 +1,51 @@
-🛒 Tienda Web Híbrida (Java EE + JSP + Servlets + SQL Server)
+🛒 Tienda Web Híbrida — Java EE + JSP + Servlets + SQL Server
 
-Aplicación web de tienda desarrollada con Java (Jakarta EE 8), JSP, Servlets, Maven, Tomcat y SQL Server.
-Incluye backend modular por capas (DAO/Modelo), frontend en JSP y conexión a base de datos mediante JDBC.
+Aplicación web de tienda desarrollada con Java (Jakarta EE 8), JSP, Servlets, Maven, Tomcat 10 y SQL Server.
+Incluye arquitectura en capas (DAO/Modelo), operaciones CRUD, vistas JSP y conexión JDBC a base de datos.
 
-Este repositorio contiene:
-
-Proyecto web (Maven)
-
-Conexión con SQL Server
-
-DAO funcionales
-
-Servlet funcional con vista JSP
-
-Estructura lista para ampliar catálogo, carrito, API de monedas, panel admin, etc.
+Este repositorio representa una base sólida lista para extender hacia:
+🛍️ Catálogo de productos
+🛒 Carrito de compras
+🔐 Login y sesiones
+🧾 Ventas
+🖥️ Panel administrativo en Swing
 
 🚀 Tecnologías Utilizadas
-Backend
+🧩 Backend
 
-Java 22 (Se paso a Java 17)
+Java 17 / 22
 
 Jakarta EE 8 (Servlet API)
+
+JDBC
 
 Maven
 
 Tomcat 10
 
-JDBC
-
 SQL Server 2019
 
-Frontend
+🎨 Frontend
 
-JSP
+JSP + HTML5
 
-HTML / CSS
+CSS3
 
-JSTL (opcional para futuras mejoras)
+JSP Scriptlets
 
-Base de Datos
+JSTL (planeado para versiones futuras)
+
+🗄️ Base de Datos
 
 SQL Server
 
-Tablas: productos, usuarios, ventas
+Tablas:
+
+productos
+
+usuarios
+
+ventas
 
 📂 Estructura del Proyecto
 TiendaWeb/
@@ -69,10 +72,8 @@ TiendaWeb/
 ├── pom.xml
 └── README.md
 
-🗄️ Base de Datos
-
-Tablas necesarias:
-
+🗄️ Script de Base de Datos
+Tabla productos
 CREATE TABLE productos (
     id INT PRIMARY KEY IDENTITY(1,1),
     nombre VARCHAR(100),
@@ -82,6 +83,7 @@ CREATE TABLE productos (
     imagen_url VARCHAR(300)
 );
 
+Tabla usuarios
 CREATE TABLE usuarios (
     id INT PRIMARY KEY IDENTITY(1,1),
     nombre VARCHAR(100),
@@ -90,6 +92,7 @@ CREATE TABLE usuarios (
     moneda_preferida VARCHAR(5)
 );
 
+Tabla ventas
 CREATE TABLE ventas (
     id INT PRIMARY KEY IDENTITY(1,1),
     id_usuario INT,
@@ -115,12 +118,9 @@ public static Connection getConexion() {
 }
 
 
-El proyecto usa autenticación de Windows, por lo que no requiere usuario ni contraseña.
+✔ Usa autenticación de Windows, sin usuario ni contraseña.
 
-🌐 Servlet Principal (ProductoServlet)
-
-Servlet encargado de consultar productos desde la BD y enviarlos a la vista JSP.
-
+🌐 Servlet Principal — ProductoServlet
 @WebServlet("/productos")
 public class ProductoServlet extends HttpServlet {
 
@@ -163,51 +163,50 @@ public class ProductoServlet extends HttpServlet {
 </table>
 
 ▶️ Cómo Ejecutar el Proyecto
-1. Importar en NetBeans o IntelliJ
 
+Importar en NetBeans o IntelliJ
 Abrir como proyecto Maven.
 
-2. Instalar dependencias
+Instalar dependencias
+Maven las descarga automáticamente.
 
-Maven descarga todo automáticamente.
+Configurar Tomcat 10
 
-3. Configurar Tomcat 10
+Ejecutar el proyecto
+Desde IDE o usando:
 
-Agregar servidor → seleccionar Tomcat → iniciar.
+mvn clean install
 
-4. Ejecutar el proyecto
 
-En NetBeans → Run Project
-o
-mvn clean install → desplegar en Tomcat manualmente.
+Abrir en navegador:
 
-5. Abrir en navegador:
 http://localhost:8080/TiendaWeb/
+
 http://localhost:8080/TiendaWeb/productos
 
-📌 Estado Actual
+📌 Estado Actual del Proyecto
 
-✔ Proyecto web funcionando
-✔ Tomcat corriendo
-✔ JSP cargado
-✔ Servlet cargando productos
-✔ Base SQL lista
-✔ Arquitectura por capas funcional
+✔ Arquitectura en capas
+✔ JSP + Servlet funcionando
+✔ CRUD de productos terminado
+✔ Conexión a SQL Server funcionando
+✔ Proyecto estable y expandible
 
-Próximas etapas:
-
-Carrito de compras
+🧩 Próximos módulos
 
 Login de usuario
 
-API de monedas
+Sesiones
 
-Panel Admin en Swing
+Carrito de compras
 
-Seguridad y sesiones
+API de moneda
+
+Panel admin en Swing
+
+Seguridad
 
 📜 Licencia
--Juan Esteban Herrera Herrera
+
+Juan Esteban Herrera Herrera
 Este proyecto es libre para estudio y uso educativo.
-
-
