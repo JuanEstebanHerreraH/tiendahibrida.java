@@ -1,53 +1,53 @@
 🛒 Tienda Web Híbrida — Java EE + JSP + Servlets + SQL Server
 
-Aplicación web de tienda desarrollada con Java (Jakarta EE 8), JSP, Servlets, Maven, Tomcat 10 y SQL Server.
-Incluye arquitectura en capas (DAO/Modelo), operaciones CRUD, vistas JSP y conexión JDBC a base de datos.
+Aplicación web de tienda construida con Java 17/22, Jakarta EE, JSP, Servlets, Maven, Tomcat 10 y SQL Server.
+Incluye arquitectura en capas, autenticación, CRUD, vistas JSP, integración con base de datos y un módulo de administrador hecho con Swing (JFrame).
 
-Este repositorio representa una base sólida lista para extender hacia:
-🛍️ Catálogo de productos
-🛒 Carrito de compras
-🔐 Login y sesiones
-🧾 Ventas
-🖥️ Panel administrativo en Swing
+✔️ Proyecto sólido, moderno, estable y listo para expandir.
 
 🚀 Tecnologías Utilizadas
 🧩 Backend
 
 Java 17 / 22
 
-Jakarta EE 8 (Servlet API)
+Jakarta EE (Servlet API)
+
+JSP + JSTL
 
 JDBC
 
 Maven
 
-Tomcat 10
+Tomcat 10.1.x (actualizado desde Tomcat 9 para soporte Jakarta)
 
 SQL Server 2019
 
 🎨 Frontend
 
-JSP + HTML5
+JSP
+
+HTML5
 
 CSS3
 
-JSP Scriptlets
+JSTL / Expression Language
 
-JSTL (planeado para versiones futuras)
-
-🗄️ Base de Datos
+🗄 Base de Datos
 
 SQL Server
 
-Tablas:
+JDBC Driver: mssql-jdbc-13.x.jre11.jar
 
-productos
+Windows Authentication habilitada mediante:
 
-usuarios
+integratedSecurity=true
 
-ventas
+mssql-jdbc_auth-x64.dll dentro de /System32
 
 📂 Estructura del Proyecto
+
+Organizada y visual para GitHub:
+
 TiendaWeb/
 │
 ├── src/
@@ -57,14 +57,21 @@ TiendaWeb/
 │   │   │   │   ├── Producto.java
 │   │   │   │   ├── Usuario.java
 │   │   │   │   └── Venta.java
+│   │   │   │
 │   │   │   ├── com.tienda.modelo.dao/
 │   │   │   │   ├── ConexionDB.java
-│   │   │   │   └── ProductoDAO.java
-│   │   │   └── com.tiendawweb.controladores/
-│   │   │       └── ProductoServlet.java
+│   │   │   │   ├── ProductoDAO.java
+│   │   │   │   └── UsuarioDAO.java
+│   │   │   │
+│   │   │   ├── com.tiendawweb.controladores/
+│   │   │   │   ├── Login.java
+│   │   │   │   └── ProductoServlet.java
+│   │   │
 │   │   ├── webapp/
 │   │   │   ├── index.jsp
+│   │   │   ├── login.jsp
 │   │   │   └── productos.jsp
+│   │   │
 │   │   └── resources/
 │   │
 │   ├── test/
@@ -72,8 +79,8 @@ TiendaWeb/
 ├── pom.xml
 └── README.md
 
-🗄️ Script de Base de Datos
-Tabla productos
+🗄️ Script de Base de Datos (SQL Server)
+🛍️ Tabla productos
 CREATE TABLE productos (
     id INT PRIMARY KEY IDENTITY(1,1),
     nombre VARCHAR(100),
@@ -83,7 +90,7 @@ CREATE TABLE productos (
     imagen_url VARCHAR(300)
 );
 
-Tabla usuarios
+👤 Tabla usuarios
 CREATE TABLE usuarios (
     id INT PRIMARY KEY IDENTITY(1,1),
     nombre VARCHAR(100),
@@ -92,7 +99,7 @@ CREATE TABLE usuarios (
     moneda_preferida VARCHAR(5)
 );
 
-Tabla ventas
+🧾 Tabla ventas
 CREATE TABLE ventas (
     id INT PRIMARY KEY IDENTITY(1,1),
     id_usuario INT,
@@ -104,8 +111,15 @@ CREATE TABLE ventas (
 );
 
 🔌 Conexión con SQL Server (ConexionDB.java)
+
+Autenticación de Windows habilitada:
+
 private static final String URL =
-"jdbc:sqlserver://localhost:1433;databaseName=tienda_db;encrypt=false;trustServerCertificate=true;";
+    "jdbc:sqlserver://localhost:1433;" +
+    "databaseName=tienda_db;" +
+    "encrypt=false;" +
+    "trustServerCertificate=true;" +
+    "integratedSecurity=true;";
 
 public static Connection getConexion() {
     try {
@@ -117,27 +131,44 @@ public static Connection getConexion() {
     }
 }
 
+✔ Requisitos:
 
-✔ Usa autenticación de Windows, sin usuario ni contraseña.
+Agregar mssql-jdbc-13.x.jre11.jar a:
 
-🌐 Servlet Principal — ProductoServlet
-@WebServlet("/productos")
-public class ProductoServlet extends HttpServlet {
+Apache Tomcat 10.1.x / lib
 
-    private ProductoDAO dao = new ProductoDAO();
+
+Agregar mssql-jdbc_auth-x64.dll a:
+
+C:\Windows\System32
+
+🌐 Controladores (Servlets)
+✨ LoginServlet (Jakarta EE)
+@WebServlet("/login")
+public class Login extends HttpServlet {
+
+    private final UsuarioDAO dao = new UsuarioDAO();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        List<Producto> productos = dao.listar();
-        req.setAttribute("lista", productos);
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
 
-        req.getRequestDispatcher("productos.jsp").forward(req, resp);
+        Usuario u = dao.login(email, password);
+
+        if (u != null) {
+            request.getSession().setAttribute("usuario", u);
+            response.sendRedirect("listarProductos");
+        } else {
+            request.setAttribute("error", "Correo o contraseña incorrectos");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
+        }
     }
 }
 
-🎨 Vista productos.jsp
+🎨 Vista JSP – productos.jsp
 <h1>Productos</h1>
 
 <table border="1">
@@ -162,51 +193,66 @@ public class ProductoServlet extends HttpServlet {
     </c:forEach>
 </table>
 
+⚙️ Cambio de Tomcat (Muy Importante)
+
+Este proyecto se migró de:
+
+❌ Tomcat 9 (usa javax)
+⬇️
+✅ Tomcat 10.1.x (usa jakarta)
+
+Por eso todo el proyecto ahora funciona con:
+
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
+import jakarta.servlet.annotation.*;
+
+
+Y no con javax.
+
 ▶️ Cómo Ejecutar el Proyecto
+1️⃣ Importar el proyecto
 
-Importar en NetBeans o IntelliJ
-Abrir como proyecto Maven.
+Abrir en NetBeans o IntelliJ como proyecto Maven.
 
-Instalar dependencias
+2️⃣ Instalar dependencias
+
 Maven las descarga automáticamente.
 
-Configurar Tomcat 10
+3️⃣ Configurar Tomcat 10
 
-Ejecutar el proyecto
-Desde IDE o usando:
+En NetBeans → Services → Servers
+Agregar Tomcat 10.1.x
+Configurar este proyecto ahí.
 
+4️⃣ Ejecutar
 mvn clean install
 
-
-Abrir en navegador:
-
+5️⃣ Abrir en navegador
 http://localhost:8080/TiendaWeb/
-
 http://localhost:8080/TiendaWeb/productos
+http://localhost:8080/TiendaWeb/login
 
 📌 Estado Actual del Proyecto
 
 ✔ Arquitectura en capas
-✔ JSP + Servlet funcionando
-✔ CRUD de productos terminado
-✔ Conexión a SQL Server funcionando
+✔ JSP + Servlets funcionando
+✔ CRUD de productos
+✔ Login (en corrección final)
+✔ Conexión SQL Server
+✔ Tomcat actualizado
 ✔ Proyecto estable y expandible
 
-🧩 Próximos módulos
+🧩 Próximos Módulos
 
-Login de usuario
-
-Sesiones
-
-Carrito de compras
-
-API de moneda
-
-Panel admin en Swing
-
-Seguridad
+🔐 Login 100% funcional
+🧺 Carrito de compras
+💱 API de moneda (USD → COP)
+📊 Panel admin Swing
+🛡 Seguridad
+🧾 Módulo de ventas
 
 📜 Licencia
 
 Juan Esteban Herrera Herrera
-Este proyecto es libre para estudio y uso educativo.
+Libre para estudio, aprendizaje y uso educativo.
