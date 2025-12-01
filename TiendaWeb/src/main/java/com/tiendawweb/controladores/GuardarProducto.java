@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/guardarProducto")
+@WebServlet("/GuardarProducto")
 public class GuardarProducto extends HttpServlet {
 
     private final ProductoDAO dao = new ProductoDAO();
@@ -33,6 +33,6 @@ public class GuardarProducto extends HttpServlet {
         dao.agregar(p);
 
         // 4. Redirigir a la lista
-        response.sendRedirect("listarProductos");
+        response.sendRedirect("productos");
     }
 }

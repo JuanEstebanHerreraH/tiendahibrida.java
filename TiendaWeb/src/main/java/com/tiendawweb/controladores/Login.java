@@ -35,7 +35,9 @@ public class Login extends HttpServlet {
             HttpSession sesion = request.getSession();
             sesion.setAttribute("usuario", u);
 
-            response.sendRedirect("listarProductos");
+            // 👉 Aquí el cambio importante
+            response.sendRedirect("productos");
+
         } else {
             request.setAttribute("error", "Correo o contraseña incorrectos");
             request.getRequestDispatcher("login.jsp").forward(request, response);

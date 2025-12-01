@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 
-@WebServlet("/eliminarProducto")
+@WebServlet("/EliminarProducto")
 public class EliminarProducto extends HttpServlet {
 
     private final ProductoDAO dao = new ProductoDAO();
@@ -23,6 +23,6 @@ public class EliminarProducto extends HttpServlet {
 
         dao.eliminar(id);
 
-        response.sendRedirect("listarProductos");
+        response.sendRedirect("productos");
     }
 }

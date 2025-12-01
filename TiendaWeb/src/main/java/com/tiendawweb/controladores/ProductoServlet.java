@@ -21,8 +21,7 @@ public class ProductoServlet extends HttpServlet {
             throws ServletException, IOException {
 
         List<Producto> lista = dao.listar();
-
-        request.setAttribute("listaProductos", lista);
+        request.setAttribute("productos", lista);
         request.getRequestDispatcher("/WEB-INF/productos.jsp").forward(request, response);
     }
 }

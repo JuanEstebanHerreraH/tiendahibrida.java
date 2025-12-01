@@ -8,7 +8,7 @@
 
 <h1>Registrar Nuevo Producto</h1>
 
-<form action="guardarProducto" method="post">
+<form action="GuardarProducto" method="post">
 
     Nombre: <br>
     <input type="text" name="nombre" required><br><br>

@@ -22,7 +22,7 @@
 
 <h1>Editar Producto</h1>
 
-<form action="actualizarProducto" method="post">
+<form action="ActualizarProducto" method="post">
 
     <input type="hidden" name="id" value="<%= p.getId() %>">
 

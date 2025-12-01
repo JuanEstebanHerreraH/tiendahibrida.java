@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/actualizarProducto")
+@WebServlet("/ActualizarProducto")
 public class ActualizarProducto extends HttpServlet {
 
     private final ProductoDAO dao = new ProductoDAO();

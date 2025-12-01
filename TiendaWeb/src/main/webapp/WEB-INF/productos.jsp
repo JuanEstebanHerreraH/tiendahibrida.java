@@ -11,14 +11,14 @@
 <h1>Lista de Productos</h1>
 
 <!-- BOTÓN PARA AGREGAR -->
-<a href="agregarProducto.jsp">
+<a href="NuevoProducto.jsp">
     <button>Agregar Producto</button>
 </a>
 <br><br>
 
 <ul>
 <%
-    List<Producto> lista = (List<Producto>) request.getAttribute("listaProductos");
+    List<Producto> lista = (List<Producto>) request.getAttribute("productos");
 
     if (lista != null) {
         for (Producto p : lista) {
@@ -31,7 +31,7 @@
         <a href="editarProducto?id=<%= p.getId() %>">Editar</a>
 
        
-        <a href="eliminarProducto?id=<%= p.getId() %>"
+        <a href="EliminarProducto?id=<%= p.getId() %>"
            onclick="return confirm('¿Eliminar este producto?');">
            Eliminar
         </a>
