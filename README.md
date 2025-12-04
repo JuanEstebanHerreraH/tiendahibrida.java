@@ -45,35 +45,6 @@ integratedSecurity=true
 
 mssql-jdbc_auth-x64.dll en C:\Windows\System32
 
-📂 Estructura del Proyecto
-TiendaWeb/
-│── src/
-│   └── main/
-│       ├── java/
-│       │   ├── com.tienda.modelo.entidades/
-│       │   │   ├── Producto.java
-│       │   │   ├── Usuario.java
-│       │   │   └── Venta.java
-│       │   │
-│       │   ├── com.tienda.modelo.dao/
-│       │   │   ├── ConexionDB.java
-│       │   │   ├── ProductoDAO.java
-│       │   │   └── UsuarioDAO.java
-│       │   │
-│       │   ├── com.tiendawweb.controladores/
-│       │   │   ├── Login.java
-│       │   │   ├── Logout.java
-│       │   │   ├── ProductoServlet.java
-│       │   │   └── TiendaServlet.java
-│       │
-│       └── webapp/
-│           ├── index.jsp
-│           ├── login.jsp
-│           ├── productos.jsp
-│           └── catalogo.jsp
-│
-└── pom.xml
-
 🗄 Script de Base de Datos (SQL Server)
 🛍️ Tabla productos
 CREATE TABLE productos (
