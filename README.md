@@ -1,9 +1,10 @@
-🛒 Tienda Web Híbrida — Java EE + JSP + Servlets + SQL Server
+🛒 Tienda Web — Java, Jakarta EE, JSP, Servlets, SQL Server & Swing Admin Panel
 
-Aplicación web de tienda construida con Java 17/22, Jakarta EE, JSP, Servlets, Maven, Tomcat 10 y SQL Server.
-Incluye arquitectura en capas, autenticación, CRUD, vistas JSP, integración con base de datos y un módulo de administrador hecho con Swing (JFrame).
+Aplicación web completa de tienda online desarrollada con Java 17/22, Jakarta EE, JSP, Servlets, Maven, Tomcat 10, SQL Server y un panel de administración de escritorio en Swing.
 
-✔️ Proyecto sólido, moderno, estable y listo para expandir.
+Incluye autenticación con roles, CRUD de productos, catálogo para clientes, carrito (en desarrollo), arquitectura en capas y conexión a base de datos mediante JDBC.
+
+Proyecto moderno, mantenible y listo para escalar.
 
 🚀 Tecnologías Utilizadas
 🧩 Backend
@@ -14,72 +15,66 @@ Jakarta EE (Servlet API)
 
 JSP + JSTL
 
-JDBC
-
 Maven
 
-Tomcat 10.1.x (actualizado desde Tomcat 9 para soporte Jakarta)
+Tomcat 10.1.x (migración desde javax → jakarta)
+
+JDBC
 
 SQL Server 2019
 
 🎨 Frontend
 
-JSP
+JSP + JSTL
 
 HTML5
 
 CSS3
 
-JSTL / Expression Language
+Bootstrap (opcional)
 
 🗄 Base de Datos
 
 SQL Server
 
-JDBC Driver: mssql-jdbc-13.x.jre11.jar
+Controlador JDBC: mssql-jdbc-13.x.jre11.jar
 
-Windows Authentication habilitada mediante:
+Autenticación Windows mediante:
 
 integratedSecurity=true
 
-mssql-jdbc_auth-x64.dll dentro de /System32
+mssql-jdbc_auth-x64.dll en C:\Windows\System32
 
 📂 Estructura del Proyecto
-
-Organizada y visual para GitHub:
-
 TiendaWeb/
+│── src/
+│   └── main/
+│       ├── java/
+│       │   ├── com.tienda.modelo.entidades/
+│       │   │   ├── Producto.java
+│       │   │   ├── Usuario.java
+│       │   │   └── Venta.java
+│       │   │
+│       │   ├── com.tienda.modelo.dao/
+│       │   │   ├── ConexionDB.java
+│       │   │   ├── ProductoDAO.java
+│       │   │   └── UsuarioDAO.java
+│       │   │
+│       │   ├── com.tiendawweb.controladores/
+│       │   │   ├── Login.java
+│       │   │   ├── Logout.java
+│       │   │   ├── ProductoServlet.java
+│       │   │   └── TiendaServlet.java
+│       │
+│       └── webapp/
+│           ├── index.jsp
+│           ├── login.jsp
+│           ├── productos.jsp
+│           └── catalogo.jsp
 │
-├── src/
-│   ├── main/
-│   │   ├── java/
-│   │   │   ├── com.tienda.modelo.entidades/
-│   │   │   │   ├── Producto.java
-│   │   │   │   ├── Usuario.java
-│   │   │   │   └── Venta.java
-│   │   │   │
-│   │   │   ├── com.tienda.modelo.dao/
-│   │   │   │   ├── ConexionDB.java
-│   │   │   │   ├── ProductoDAO.java
-│   │   │   │   └── UsuarioDAO.java
-│   │   │   │
-│   │   │   ├── com.tiendawweb.controladores/
-│   │   │   │   ├── Login.java
-│   │   │   │   └── ProductoServlet.java
-│   │   │
-│   │   ├── webapp/
-│   │   │   ├── index.jsp
-│   │   │   ├── login.jsp
-│   │   │   └── productos.jsp
-│   │   │
-│   │   └── resources/
-│   │
-│   ├── test/
-│
-├── pom.xml
-└── README.md
+└── pom.xml
 
-🗄️ Script de Base de Datos (SQL Server)
+🗄 Script de Base de Datos (SQL Server)
 🛍️ Tabla productos
 CREATE TABLE productos (
     id INT PRIMARY KEY IDENTITY(1,1),
@@ -96,7 +91,8 @@ CREATE TABLE usuarios (
     nombre VARCHAR(100),
     email VARCHAR(100),
     password VARCHAR(100),
-    moneda_preferida VARCHAR(5)
+    moneda_preferida VARCHAR(5),
+    rol VARCHAR(20) NOT NULL DEFAULT 'cliente'
 );
 
 🧾 Tabla ventas
@@ -110,16 +106,18 @@ CREATE TABLE ventas (
     FOREIGN KEY (id_producto) REFERENCES productos(id)
 );
 
-🔌 Conexión con SQL Server (ConexionDB.java)
+⭐ Convertir un usuario en administrador
+UPDATE usuarios 
+SET rol = 'admin' 
+WHERE email = 'admin@tienda.com';
 
-Autenticación de Windows habilitada:
-
+🔌 Conexión SQL Server (ConexionDB.java)
 private static final String URL =
-    "jdbc:sqlserver://localhost:1433;" +
-    "databaseName=tienda_db;" +
-    "encrypt=false;" +
-    "trustServerCertificate=true;" +
-    "integratedSecurity=true;";
+    "jdbc:sqlserver://localhost:1433;"
+    + "databaseName=tienda_db;"
+    + "encrypt=false;"
+    + "trustServerCertificate=true;"
+    + "integratedSecurity=true;";
 
 public static Connection getConexion() {
     try {
@@ -131,128 +129,84 @@ public static Connection getConexion() {
     }
 }
 
-✔ Requisitos:
 
-Agregar mssql-jdbc-13.x.jre11.jar a:
+✔ Requiere agregar el .jar del driver a Tomcat/lib
+✔ Requiere mssql-jdbc_auth-x64.dll en System32
 
-Apache Tomcat 10.1.x / lib
+🌐 Controladores Principales (Servlets)
+🔐 LoginServlet
 
+Autenticación por roles (admin → CRUD / cliente → tienda).
 
-Agregar mssql-jdbc_auth-x64.dll a:
-
-C:\Windows\System32
-
-🌐 Controladores (Servlets)
-✨ LoginServlet (Jakarta EE)
-@WebServlet("/login")
-public class Login extends HttpServlet {
-
-    private final UsuarioDAO dao = new UsuarioDAO();
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
-
-        Usuario u = dao.login(email, password);
-
-        if (u != null) {
-            request.getSession().setAttribute("usuario", u);
-            response.sendRedirect("listarProductos");
-        } else {
-            request.setAttribute("error", "Correo o contraseña incorrectos");
-            request.getRequestDispatcher("login.jsp").forward(request, response);
-        }
-    }
+if (u.getRol().equals("admin")) {
+    response.sendRedirect("productos");   // Panel admin (CRUD)
+} else {
+    response.sendRedirect("catalogo.jsp"); // Vista cliente
 }
 
-🎨 Vista JSP – productos.jsp
-<h1>Productos</h1>
+🎨 Vistas JSP — Ejemplo productos.jsp
+<c:forEach var="p" items="${lista}">
+<tr>
+    <td>${p.id}</td>
+    <td>${p.nombre}</td>
+    <td>${p.precioUSD}</td>
+    <td>${p.stock}</td>
+    <td>${p.categoria}</td>
+    <td><img src="${p.imagenURL}" width="80"></td>
+</tr>
+</c:forEach>
 
-<table border="1">
-    <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Precio (USD)</th>
-        <th>Stock</th>
-        <th>Categoría</th>
-        <th>Imagen</th>
-    </tr>
+⚙️ Migración a Tomcat 10
 
-    <c:forEach var="p" items="${lista}">
-        <tr>
-            <td>${p.id}</td>
-            <td>${p.nombre}</td>
-            <td>${p.precioUSD}</td>
-            <td>${p.stock}</td>
-            <td>${p.categoria}</td>
-            <td><img src="${p.imagenURL}" width="80"></td>
-        </tr>
-    </c:forEach>
-</table>
-
-⚙️ Cambio de Tomcat (Muy Importante)
-
-Este proyecto se migró de:
-
-❌ Tomcat 9 (usa javax)
-⬇️
-✅ Tomcat 10.1.x (usa jakarta)
-
-Por eso todo el proyecto ahora funciona con:
+Este proyecto utiliza Jakarta EE:
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
 
-Y no con javax.
+No funcionarían imports javax.* (propios de Tomcat 9).
 
 ▶️ Cómo Ejecutar el Proyecto
-1️⃣ Importar el proyecto
+1️⃣ Importar en NetBeans / IntelliJ
 
-Abrir en NetBeans o IntelliJ como proyecto Maven.
+Abrir como proyecto Maven.
 
 2️⃣ Instalar dependencias
 
-Maven las descarga automáticamente.
+mvn clean install
 
 3️⃣ Configurar Tomcat 10
 
-En NetBeans → Services → Servers
-Agregar Tomcat 10.1.x
-Configurar este proyecto ahí.
+Agregar servidor cuenta como Jakarta EE.
 
 4️⃣ Ejecutar
-mvn clean install
-
-5️⃣ Abrir en navegador
 http://localhost:8080/TiendaWeb/
-http://localhost:8080/TiendaWeb/productos
 http://localhost:8080/TiendaWeb/login
+http://localhost:8080/TiendaWeb/productos   (Admin)
+http://localhost:8080/TiendaWeb/catalogo    (Cliente)
 
 📌 Estado Actual del Proyecto
 
 ✔ Arquitectura en capas
 ✔ JSP + Servlets funcionando
 ✔ CRUD de productos
-✔ Login (en corrección final)
+✔ Autenticación con roles (admin/cliente)
 ✔ Conexión SQL Server
-✔ Tomcat actualizado
-✔ Proyecto estable y expandible
+✔ Tomcat 10
+✔ Panel Admin Swing
+✔ Estable y listo para expandirse
 
 🧩 Próximos Módulos
 
-🔐 Login 100% funcional
+🔐 Login 100% final
 🧺 Carrito de compras
-💱 API de moneda (USD → COP)
-📊 Panel admin Swing
-🛡 Seguridad
-🧾 Módulo de ventas
+💱 Conversión USD → COP
+📦 Checkout
+📊 Reportes de ventas
+🛡 Filtros de seguridad avanzados
 
 📜 Licencia
 
-Juan Esteban Herrera Herrera
-Libre para estudio, aprendizaje y uso educativo.
+Desarrollado por Juan Esteban Herrera Herrera
+Uso libre para estudio, práctica e investigación.
