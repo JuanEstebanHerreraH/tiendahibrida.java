@@ -1,10 +1,11 @@
 package com.tiendawweb.controladores;
 
+import com.com.tienda.modelo.dao.UsuarioDAO;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import com.com.tienda.modelo.dao.UsuarioDAO;
 import com.com.tienda.modelo.entidades.Usuario;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -32,11 +33,16 @@ public class Login extends HttpServlet {
         Usuario u = dao.login(email, password);
 
         if (u != null) {
+
             HttpSession sesion = request.getSession();
             sesion.setAttribute("usuario", u);
+            sesion.setAttribute("rol", u.getRol());   // 🔥 IMPORTANTÍSIMO
 
-            // 👉 Aquí el cambio importante
-            response.sendRedirect("productos");
+            if (u.getRol().equals("admin")) {
+                response.sendRedirect("productos");   // admin → CRUD
+            } else {
+                response.sendRedirect("tienda");      // cliente → tienda
+            }
 
         } else {
             request.setAttribute("error", "Correo o contraseña incorrectos");

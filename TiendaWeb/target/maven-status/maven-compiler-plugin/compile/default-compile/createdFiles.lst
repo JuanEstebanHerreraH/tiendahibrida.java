@@ -3,11 +3,13 @@ com\com\tienda\modelo\dao\VentaDAO.class
 com\com\tienda\modelo\entidades\ComTiendaModeloEntidades.class
 com\mycompany\tiendaweb\filtros\AuthFilter.class
 com\tiendawweb\controladores\Login.class
+com\tiendawweb\controladores\CarritoServlet.class
 com\tiendawweb\controladores\ProductoServlet.class
 com\com\tienda\modelo\dao\ConexionDB.class
 com\tiendawweb\controladores\ActualizarProducto.class
 com\tienda\modelo\entidades\Producto.class
 com\mycompany\tiendaweb\JakartaRestConfiguration.class
+com\tiendawweb\controladores\RegistroUsuario.class
 com\com\tienda\modelo\entidades\Venta.class
 com\tiendawweb\controladores\ProductoDetalleServlet.class
 com\com\tienda\modelo\entidades\Usuario.class
@@ -16,4 +18,5 @@ com\tiendawweb\controladores\GuardarProducto.class
 com\tiendawweb\controladores\EditarProductoServlet.class
 com\tiendawweb\controladores\Logout.class
 com\tiendawweb\controladores\EliminarProducto.class
+com\tiendawweb\controladores\HomeServlet.class
 com\mycompany\tiendaweb\resources\JakartaEE8Resource.class

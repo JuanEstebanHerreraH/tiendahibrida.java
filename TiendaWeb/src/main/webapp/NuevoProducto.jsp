@@ -1,3 +1,4 @@
+<%@page import="com.com.tienda.modelo.entidades.Usuario"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -22,6 +23,15 @@
     <button type="submit">Guardar</button>
 
 </form>
+<a href="logout">Cerrar Sesión</a>
+<%
+    Usuario u = (Usuario) session.getAttribute("usuario");
+
+    if (u == null) {
+        response.sendRedirect("login.jsp");
+        return;
+    }
+%>
 
 </body>
 </html>

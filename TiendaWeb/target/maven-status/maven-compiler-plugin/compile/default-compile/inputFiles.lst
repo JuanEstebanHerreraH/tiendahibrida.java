@@ -6,12 +6,15 @@ C:\Users\57304\Desktop\TiendaWeb\TiendaWeb\src\main\java\com\mycompany\tiendaweb
 C:\Users\57304\Desktop\TiendaWeb\TiendaWeb\src\main\java\com\tiendawweb\controladores\Logout.java
 C:\Users\57304\Desktop\TiendaWeb\TiendaWeb\src\main\java\com\tiendawweb\controladores\ActualizarProducto.java
 C:\Users\57304\Desktop\TiendaWeb\TiendaWeb\src\main\java\com\tiendawweb\controladores\ProductoServlet.java
+C:\Users\57304\Desktop\TiendaWeb\TiendaWeb\src\main\java\com\tiendawweb\controladores\CarritoServlet.java
+C:\Users\57304\Desktop\TiendaWeb\TiendaWeb\src\main\java\com\tiendawweb\controladores\RegistroUsuario.java
 C:\Users\57304\Desktop\TiendaWeb\TiendaWeb\src\main\java\com\tiendawweb\controladores\EditarProductoServlet.java
 C:\Users\57304\Desktop\TiendaWeb\TiendaWeb\src\main\java\com\com\tienda\modelo\dao\ConexionDB.java
 C:\Users\57304\Desktop\TiendaWeb\TiendaWeb\src\main\java\com\tiendawweb\controladores\Login.java
 C:\Users\57304\Desktop\TiendaWeb\TiendaWeb\src\main\java\com\com\tienda\modelo\entidades\ComTiendaModeloEntidades.java
 C:\Users\57304\Desktop\TiendaWeb\TiendaWeb\src\main\java\com\tiendawweb\controladores\EliminarProducto.java
 C:\Users\57304\Desktop\TiendaWeb\TiendaWeb\src\main\java\com\com\tienda\modelo\entidades\Usuario.java
+C:\Users\57304\Desktop\TiendaWeb\TiendaWeb\src\main\java\com\tiendawweb\controladores\HomeServlet.java
 C:\Users\57304\Desktop\TiendaWeb\TiendaWeb\src\main\java\com\tiendawweb\controladores\GuardarProducto.java
 C:\Users\57304\Desktop\TiendaWeb\TiendaWeb\src\main\java\com\com\tienda\modelo\dao\VentaDAO.java
 C:\Users\57304\Desktop\TiendaWeb\TiendaWeb\src\main\java\com\mycompany\tiendaweb\JakartaRestConfiguration.java

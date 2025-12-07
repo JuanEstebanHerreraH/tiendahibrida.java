@@ -1,18 +1,17 @@
-
 package com.com.tienda.modelo.entidades;
 
-
 public class Usuario {
+
     private int id;
-private String nombre;
-private String email;
-private String password;
-private String monedaPreferida; // COP, USD, etc.
+    private String nombre;
+    private String email;
+    private String password;
+    private String rol;
+    private String monedaPreferida;
 
     public int getId() {
         return id;
     }
-
     public void setId(int id) {
         this.id = id;
     }
@@ -20,7 +19,6 @@ private String monedaPreferida; // COP, USD, etc.
     public String getNombre() {
         return nombre;
     }
-
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
@@ -28,7 +26,6 @@ private String monedaPreferida; // COP, USD, etc.
     public String getEmail() {
         return email;
     }
-
     public void setEmail(String email) {
         this.email = email;
     }
@@ -36,17 +33,21 @@ private String monedaPreferida; // COP, USD, etc.
     public String getPassword() {
         return password;
     }
-
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRol() {
+        return rol;
+    }
+    public void setRol(String rol) {
+        this.rol = rol;
     }
 
     public String getMonedaPreferida() {
         return monedaPreferida;
     }
-
     public void setMonedaPreferida(String monedaPreferida) {
         this.monedaPreferida = monedaPreferida;
     }
-
 }

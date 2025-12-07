@@ -18,12 +18,13 @@ public class AuthFilter implements Filter {
             "/login.jsp",
             "/",
             "/index.jsp",
-            "/css/", "/js/", "/images/"
+            "/css/", "/js/", "/images/",
+            "/registrarse", "/registrarse.jsp"
     );
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response,
-                         FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
 
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
@@ -31,7 +32,7 @@ public class AuthFilter implements Filter {
         String uri = req.getRequestURI().substring(req.getContextPath().length());
 
         boolean esPublica = PUBLIC_PATHS.stream().anyMatch(uri::startsWith)
-                           || uri.matches(".*(\\.css|\\.js|\\.png|\\.jpg)$");
+                || uri.matches(".*(\\.css|\\.js|\\.png|\\.jpg)$");
 
         if (esPublica) {
             chain.doFilter(request, response);
@@ -43,6 +44,20 @@ public class AuthFilter implements Filter {
 
         if (u == null) {
             resp.sendRedirect(req.getContextPath() + "/login.jsp");
+            return;
+        }
+
+        // 🔥 BLOQUEO DE CRUD A CLIENTES
+        boolean esAdminRequest =
+                uri.startsWith("/productos") ||
+                uri.startsWith("/nuevoProducto") ||
+                uri.startsWith("/guardarProducto") ||
+                uri.startsWith("/editarProducto") ||
+                uri.startsWith("/actualizarProducto") ||
+                uri.startsWith("/eliminarProducto");
+
+        if (esAdminRequest && !"admin".equals(u.getRol())) {
+            resp.sendRedirect(req.getContextPath() + "/tienda");
             return;
         }
 

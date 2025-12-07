@@ -1,3 +1,4 @@
+<%@page import="com.com.tienda.modelo.entidades.Usuario"%>
 <%@page import="java.util.List"%>
 <%@page import="com.tienda.modelo.entidades.Producto"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -13,6 +14,7 @@
 <!-- BOTÓN PARA AGREGAR -->
 <a href="NuevoProducto.jsp">
     <button>Agregar Producto</button>
+    <a href="logout">Cerrar Sesión</a>
 </a>
 <br><br>
 
@@ -46,6 +48,14 @@
     }
 %>
 </ul>
+<%
+    Usuario u = (Usuario) session.getAttribute("usuario");
+
+    if (u == null) {
+        response.sendRedirect("login.jsp");
+        return;
+    }
+%>
 
 </body>
 </html>
