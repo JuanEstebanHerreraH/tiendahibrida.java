@@ -1,9 +1,18 @@
-🛒 Tienda Web Híbrida — Java EE + JSP + Servlets + SQL Server
+🛒 Tienda Web — Java, Jakarta EE, JSP, Servlets, SQL Server & Swing Admin Panel
 
-Aplicación web de tienda construida con Java 17/22, Jakarta EE, JSP, Servlets, Maven, Tomcat 10 y SQL Server.
-Incluye arquitectura en capas, autenticación, CRUD, vistas JSP, integración con base de datos y un módulo de administrador hecho con Swing (JFrame).
+Aplicación web completa de e-commerce desarrollada con Java 17/22, Jakarta EE, JSP, Servlets, Maven, Tomcat 10, SQL Server y un panel de administración de escritorio en Java Swing.
 
-✔️ Proyecto sólido, moderno, estable y listo para expandir.
+Incluye:
+
+✔ Autenticación con roles (cliente / admin)
+✔ CRUD de productos
+✔ Catálogo dinámico
+✔ Agregar al carrito
+✔ Administración vía Swing
+✔ Arquitectura en capas
+✔ Conexión a SQL Server con JDBC
+✔ Migración completa de javax → jakarta
+✔ Código limpio, mantenible y listo para escalar
 
 🚀 Tecnologías Utilizadas
 🧩 Backend
@@ -18,108 +27,76 @@ JDBC
 
 Maven
 
-Tomcat 10.1.x (actualizado desde Tomcat 9 para soporte Jakarta)
+Tomcat 10.1.x
 
 SQL Server 2019
 
 🎨 Frontend
 
-JSP
-
 HTML5
 
 CSS3
 
-JSTL / Expression Language
+JSP + JSTL
+
+Bootstrap (opcional)
 
 🗄 Base de Datos
 
 SQL Server
 
-JDBC Driver: mssql-jdbc-13.x.jre11.jar
+Driver JDBC: mssql-jdbc-13.x.jre11.jar
 
-Windows Authentication habilitada mediante:
+Autenticación Windows:
 
 integratedSecurity=true
 
-mssql-jdbc_auth-x64.dll dentro de /System32
 
-📂 Estructura del Proyecto
+DLL requerida:
 
-Organizada y visual para GitHub:
+mssql-jdbc_auth-x64.dll → C:\Windows\System32
 
-TiendaWeb/
-│
-├── src/
-│   ├── main/
-│   │   ├── java/
-│   │   │   ├── com.tienda.modelo.entidades/
-│   │   │   │   ├── Producto.java
-│   │   │   │   ├── Usuario.java
-│   │   │   │   └── Venta.java
-│   │   │   │
-│   │   │   ├── com.tienda.modelo.dao/
-│   │   │   │   ├── ConexionDB.java
-│   │   │   │   ├── ProductoDAO.java
-│   │   │   │   └── UsuarioDAO.java
-│   │   │   │
-│   │   │   ├── com.tiendawweb.controladores/
-│   │   │   │   ├── Login.java
-│   │   │   │   └── ProductoServlet.java
-│   │   │
-│   │   ├── webapp/
-│   │   │   ├── index.jsp
-│   │   │   ├── login.jsp
-│   │   │   └── productos.jsp
-│   │   │
-│   │   └── resources/
-│   │
-│   ├── test/
-│
-├── pom.xml
-└── README.md
-
-🗄️ Script de Base de Datos (SQL Server)
+🗄 Estructura de Base de Datos (SQL Server)
 🛍️ Tabla productos
 CREATE TABLE productos (
-    id INT PRIMARY KEY IDENTITY(1,1),
-    nombre VARCHAR(100),
-    precio_usd FLOAT,
-    stock INT,
-    categoria VARCHAR(50),
-    imagen_url VARCHAR(300)
+  id INT PRIMARY KEY IDENTITY(1,1),
+  nombre VARCHAR(100),
+  precio_usd FLOAT,
+  stock INT,
+  categoria VARCHAR(50),
+  imagen_url VARCHAR(300)
 );
 
 👤 Tabla usuarios
 CREATE TABLE usuarios (
-    id INT PRIMARY KEY IDENTITY(1,1),
-    nombre VARCHAR(100),
-    email VARCHAR(100),
-    password VARCHAR(100),
-    moneda_preferida VARCHAR(5)
+  id INT PRIMARY KEY IDENTITY(1,1),
+  nombre VARCHAR(100),
+  email VARCHAR(100),
+  password VARCHAR(100),
+  moneda_preferida VARCHAR(5),
+  rol VARCHAR(20) NOT NULL DEFAULT 'cliente'
 );
 
 🧾 Tabla ventas
 CREATE TABLE ventas (
-    id INT PRIMARY KEY IDENTITY(1,1),
-    id_usuario INT,
-    id_producto INT,
-    cantidad INT,
-    fecha DATETIME,
-    FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
-    FOREIGN KEY (id_producto) REFERENCES productos(id)
+  id INT PRIMARY KEY IDENTITY(1,1),
+  id_usuario INT,
+  id_producto INT,
+  cantidad INT,
+  fecha DATETIME,
+  FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
+  FOREIGN KEY (id_producto) REFERENCES productos(id)
 );
 
-🔌 Conexión con SQL Server (ConexionDB.java)
+⭐ Convertir un usuario en administrador
+UPDATE usuarios SET rol = 'admin' WHERE email = 'admin@tienda.com';
 
-Autenticación de Windows habilitada:
-
-private static final String URL =
-    "jdbc:sqlserver://localhost:1433;" +
-    "databaseName=tienda_db;" +
-    "encrypt=false;" +
-    "trustServerCertificate=true;" +
-    "integratedSecurity=true;";
+🔌 Conexión a SQL Server (ConexionDB.java)
+private static final String URL = "jdbc:sqlserver://localhost:1433;"
+        + "databaseName=tienda_db;"
+        + "encrypt=false;"
+        + "trustServerCertificate=true;"
+        + "integratedSecurity=true;";
 
 public static Connection getConexion() {
     try {
@@ -131,128 +108,91 @@ public static Connection getConexion() {
     }
 }
 
-✔ Requisitos:
 
-Agregar mssql-jdbc-13.x.jre11.jar a:
+✔ Requiere agregar el driver .jar en Tomcat/lib
+✔ Requiere mssql-jdbc_auth-x64.dll en C:\Windows\System32
 
-Apache Tomcat 10.1.x / lib
+🌐 Principales Controladores (Servlets)
+🔐 LoginServlet — Autenticación + Roles
 
+Redirección automática según rol:
 
-Agregar mssql-jdbc_auth-x64.dll a:
-
-C:\Windows\System32
-
-🌐 Controladores (Servlets)
-✨ LoginServlet (Jakarta EE)
-@WebServlet("/login")
-public class Login extends HttpServlet {
-
-    private final UsuarioDAO dao = new UsuarioDAO();
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
-
-        Usuario u = dao.login(email, password);
-
-        if (u != null) {
-            request.getSession().setAttribute("usuario", u);
-            response.sendRedirect("listarProductos");
-        } else {
-            request.setAttribute("error", "Correo o contraseña incorrectos");
-            request.getRequestDispatcher("login.jsp").forward(request, response);
-        }
-    }
+if (u.getRol().equals("admin")) {
+    response.sendRedirect("productos");    // Panel admin (CRUD)
+} else {
+    response.sendRedirect("catalogo.jsp"); // Vista cliente
 }
 
-🎨 Vista JSP – productos.jsp
-<h1>Productos</h1>
 
-<table border="1">
-    <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Precio (USD)</th>
-        <th>Stock</th>
-        <th>Categoría</th>
-        <th>Imagen</th>
-    </tr>
+Incluye validación para mostrar:
 
-    <c:forEach var="p" items="${lista}">
-        <tr>
-            <td>${p.id}</td>
-            <td>${p.nombre}</td>
-            <td>${p.precioUSD}</td>
-            <td>${p.stock}</td>
-            <td>${p.categoria}</td>
-            <td><img src="${p.imagenURL}" width="80"></td>
-        </tr>
-    </c:forEach>
-</table>
+Botón de “Agregar al carrito” sólo si el usuario está logueado
 
-⚙️ Cambio de Tomcat (Muy Importante)
+Mensaje de advertencia si no tiene sesión
 
-Este proyecto se migró de:
+🎨 Vistas JSP — Ejemplo (productos.jsp)
+<c:forEach var="p" items="${lista}">
+    ${p.id}
+    ${p.nombre}
+    ${p.precioUSD}
+    ${p.stock}
+    ${p.categoria}
+</c:forEach>
 
-❌ Tomcat 9 (usa javax)
-⬇️
-✅ Tomcat 10.1.x (usa jakarta)
+⚙️ Migración a Tomcat 10 (Jakarta EE)
 
-Por eso todo el proyecto ahora funciona con:
+Este proyecto ya utiliza:
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
 
-Y no con javax.
+❌ No funcionan imports javax. (Tomcat 9)
+✔ Compatible 100% con Tomcat 10.1.x
 
 ▶️ Cómo Ejecutar el Proyecto
-1️⃣ Importar el proyecto
+1️⃣ Importar en NetBeans / IntelliJ
 
-Abrir en NetBeans o IntelliJ como proyecto Maven.
+Abrir como proyecto Maven.
 
 2️⃣ Instalar dependencias
-
-Maven las descarga automáticamente.
+mvn clean install
 
 3️⃣ Configurar Tomcat 10
 
-En NetBeans → Services → Servers
-Agregar Tomcat 10.1.x
-Configurar este proyecto ahí.
+Agregar servidor → seleccionar Jakarta EE.
 
-4️⃣ Ejecutar
-mvn clean install
-
-5️⃣ Abrir en navegador
+4️⃣ Ejecutar en navegador
 http://localhost:8080/TiendaWeb/
-http://localhost:8080/TiendaWeb/productos
 http://localhost:8080/TiendaWeb/login
+http://localhost:8080/TiendaWeb/productos   (Admin)
+http://localhost:8080/TiendaWeb/catalogo    (Cliente)
 
 📌 Estado Actual del Proyecto
 
 ✔ Arquitectura en capas
-✔ JSP + Servlets funcionando
-✔ CRUD de productos
-✔ Login (en corrección final)
-✔ Conexión SQL Server
-✔ Tomcat actualizado
-✔ Proyecto estable y expandible
+✔ JSP + Servlets 100% funcionales
+✔ CRUD de productos operativo
+✔ Inicio de sesión + roles admin/cliente
+✔ Carrito: botón de agregar funcionando
+✔ Catálogo dinámico
+✔ Conexión SQL Server estable
+✔ Migración completa a Tomcat 10 (Jakarta)
+✔ Panel Administrativo en Java Swing
+✔ Sistema escalable y mantenible
 
 🧩 Próximos Módulos
 
-🔐 Login 100% funcional
-🧺 Carrito de compras
-💱 API de moneda (USD → COP)
-📊 Panel admin Swing
-🛡 Seguridad
-🧾 Módulo de ventas
+🔐 Autenticación más robusta
+🧺 Carrito completo (ver / incrementar / eliminar / total)
+💱 Conversión USD → COP automática
+📦 Módulo de checkout
+📊 Reportes de ventas
+🛡 Filtros de seguridad avanzados (filtros + listeners)
+⭐ Mejoras visuales con Bootstrap / Tailwind
 
 📜 Licencia
 
-Juan Esteban Herrera Herrera
-Libre para estudio, aprendizaje y uso educativo.
+Desarrollado por Juan Esteban Herrera Herrera
+Código libre para estudio, práctica e investigación.
