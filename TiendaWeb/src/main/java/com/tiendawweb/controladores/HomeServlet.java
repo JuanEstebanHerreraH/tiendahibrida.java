@@ -1,7 +1,7 @@
 package com.tiendawweb.controladores;
 
 import com.com.tienda.modelo.dao.ProductoDAO;
-import com.tienda.modelo.entidades.Producto;
+import com.com.tienda.modelo.entidades.Producto;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -17,18 +17,20 @@ public class HomeServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String categoria = request.getParameter("cat");
-
         try {
-            List<String> categorias = productoDAO.obtenerCategorias();
+            // Obtener parámetro de categoría
+            String cat = request.getParameter("cat");
+            List<Producto> productos;
 
-            List<Producto> productos =
-                    (categoria == null || categoria.isEmpty())
-                            ? productoDAO.listar()
-                            : productoDAO.listarPorCategoria(categoria);
+            if (cat != null && !cat.isEmpty()) {
+                productos = productoDAO.obtenerPorCategoria(cat);
+            } else {
+                productos = productoDAO.listar();
+            }
 
-            request.setAttribute("categorias", categorias);
+            // Pasar productos y categorías al JSP
             request.setAttribute("productos", productos);
+            request.setAttribute("categorias", productoDAO.obtenerCategorias());
 
         } catch (Exception e) {
             throw new ServletException("Error al cargar datos de la tienda", e);
@@ -37,3 +39,4 @@ public class HomeServlet extends HttpServlet {
         request.getRequestDispatcher("Tienda.jsp").forward(request, response);
     }
 }
+

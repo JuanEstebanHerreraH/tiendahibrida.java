@@ -1,14 +1,17 @@
 
-package com.tienda.modelo.entidades;
+package com.com.tienda.modelo.entidades;
 
 
 public class Producto {
-    private int id;
+private int id;
 private String nombre;
-private double precioUSD;
+private String descripcion;
+private double precio;
 private int stock;
-private String categoria;
-private String imagenURL;
+private String imagen;
+
+public int getstock() { return stock; }
+public void setstock(int stock) { this.stock = stock; }
 
     public int getId() {
         return id;
@@ -26,12 +29,20 @@ private String imagenURL;
         this.nombre = nombre;
     }
 
-    public double getPrecioUSD() {
-        return precioUSD;
+    public String getDescripcion() {
+        return descripcion;
     }
 
-    public void setPrecioUSD(double precioUSD) {
-        this.precioUSD = precioUSD;
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public double getPrecio() {
+        return precio;
+    }
+
+    public void setPrecio(double precio) {
+        this.precio = precio;
     }
 
     public int getStock() {
@@ -42,20 +53,12 @@ private String imagenURL;
         this.stock = stock;
     }
 
-    public String getCategoria() {
-        return categoria;
+    public String getImagen() {
+        return imagen;
     }
 
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
-    }
-
-    public String getImagenURL() {
-        return imagenURL;
-    }
-
-    public void setImagenURL(String imagenURL) {
-        this.imagenURL = imagenURL;
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
     }
 
 }

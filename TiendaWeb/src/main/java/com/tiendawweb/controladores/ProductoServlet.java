@@ -1,7 +1,7 @@
 package com.tiendawweb.controladores;
 
 import com.com.tienda.modelo.dao.ProductoDAO;
-import com.tienda.modelo.entidades.Producto;
+import com.com.tienda.modelo.entidades.Producto;
 import java.io.IOException;
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package com.tiendawweb.controladores;
 
 import com.com.tienda.modelo.dao.ProductoDAO;
-import com.tienda.modelo.entidades.Producto;
+import com.com.tienda.modelo.entidades.Producto;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -30,10 +30,10 @@ public class ActualizarProducto extends HttpServlet {
         Producto p = new Producto();
         p.setId(id);
         p.setNombre(nombre);
-        p.setPrecioUSD(precio);
+        p.setPrecio(precio);
         p.setStock(stock);
-        p.setCategoria(categoria);
-        p.setImagenURL(imagen);
+        p.setDescripcion(categoria);
+        p.setImagen(imagen);
 
         // Actualizar en la BD
         dao.actualizar(p);

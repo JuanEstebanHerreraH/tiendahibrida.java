@@ -1,7 +1,7 @@
 package com.tiendawweb.controladores;
 
 import com.com.tienda.modelo.dao.ProductoDAO;
-import com.tienda.modelo.entidades.Producto;
+import com.com.tienda.modelo.entidades.Producto;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -26,7 +26,7 @@ public class GuardarProducto extends HttpServlet {
         // 2. Crear el objeto Producto
         Producto p = new Producto();
         p.setNombre(nombre);
-        p.setPrecioUSD(precio);
+        p.setPrecio(precio);
         p.setStock(stock);
 
         // 3. Guardarlo con DAO

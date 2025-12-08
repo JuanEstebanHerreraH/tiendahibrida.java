@@ -7,7 +7,8 @@ com\tiendawweb\controladores\CarritoServlet.class
 com\tiendawweb\controladores\ProductoServlet.class
 com\com\tienda\modelo\dao\ConexionDB.class
 com\tiendawweb\controladores\ActualizarProducto.class
-com\tienda\modelo\entidades\Producto.class
+com\com\tienda\modelo\entidades\Producto.class
+com\com\tienda\modelo\dao\CarritoDAO.class
 com\mycompany\tiendaweb\JakartaRestConfiguration.class
 com\tiendawweb\controladores\RegistroUsuario.class
 com\com\tienda\modelo\entidades\Venta.class
