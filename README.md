@@ -2,20 +2,59 @@
 
 Aplicación web completa de e-commerce desarrollada con Java 17/22, Jakarta EE, JSP, Servlets, Maven, Tomcat 10, SQL Server y un panel de administración de escritorio en Java Swing.
 
-Incluye:
+Esta versión incluye mejoras en el carrito de compras, gestión de stock, filtrado por categorías, y un frontend más amigable.
 
-✔ Autenticación con roles (cliente / admin)
-✔ CRUD de productos
-✔ Catálogo dinámico
-✔ Agregar al carrito
-✔ Administración vía Swing
-✔ Arquitectura en capas
-✔ Conexión a SQL Server con JDBC
-✔ Migración completa de javax → jakarta
-✔ Código limpio, mantenible y listo para escalar
+✅ Funcionalidades Principales
+Autenticación y Roles
+
+Registro e inicio de sesión.
+
+Roles: cliente / admin.
+
+Redirección automática según rol:
+
+if (u.getRol().equals("admin")) {
+    response.sendRedirect("productos");    // Panel admin (CRUD)
+} else {
+    response.sendRedirect("catalogo.jsp"); // Vista cliente
+}
+
+Gestión de Productos (CRUD)
+
+Administración vía Swing (Desktop).
+
+Panel web con JSP para clientes.
+
+CRUD completo: agregar, actualizar, eliminar.
+
+Filtrado por categorías dinámicas.
+
+Validación de stock y cantidad en carrito.
+
+Carrito de Compras
+
+Agregar productos al carrito respetando stock disponible.
+
+Actualizar cantidades con límites según stock.
+
+Eliminar productos individualmente.
+
+Cálculo de total por producto y total general.
+
+Visualización dinámica en JSP con diseño moderno.
+
+Arquitectura y Conexión
+
+Arquitectura en capas: DAO, Entidades, Servlets, JSP.
+
+Conexión a SQL Server con JDBC.
+
+Migración completa javax → jakarta para Tomcat 10.
+
+Código limpio, mantenible y escalable.
 
 🚀 Tecnologías Utilizadas
-🧩 Backend
+Backend
 
 Java 17 / 22
 
@@ -31,53 +70,56 @@ Tomcat 10.1.x
 
 SQL Server 2019
 
-🎨 Frontend
+Frontend
 
 HTML5
 
-CSS3
+CSS3 (formulario de registro y carrito estilizados)
 
 JSP + JSTL
 
-Bootstrap (opcional)
-
-🗄 Base de Datos
+Base de Datos
 
 SQL Server
 
 Driver JDBC: mssql-jdbc-13.x.jre11.jar
 
-Autenticación Windows:
+Autenticación Windows: integratedSecurity=true
 
-integratedSecurity=true
+DLL requerida: mssql-jdbc_auth-x64.dll → C:\Windows\System32
 
-
-DLL requerida:
-
-mssql-jdbc_auth-x64.dll → C:\Windows\System32
-
-🗄 Estructura de Base de Datos (SQL Server)
-🛍️ Tabla productos
+🗄 Estructura de Base de Datos
+Tabla productos
 CREATE TABLE productos (
   id INT PRIMARY KEY IDENTITY(1,1),
   nombre VARCHAR(100),
-  precio_usd FLOAT,
+  descripcion VARCHAR(200),
+  precio FLOAT,
   stock INT,
   categoria VARCHAR(50),
-  imagen_url VARCHAR(300)
+  imagen VARCHAR(300)
 );
 
-👤 Tabla usuarios
+Tabla usuarios
 CREATE TABLE usuarios (
   id INT PRIMARY KEY IDENTITY(1,1),
   nombre VARCHAR(100),
   email VARCHAR(100),
   password VARCHAR(100),
-  moneda_preferida VARCHAR(5),
   rol VARCHAR(20) NOT NULL DEFAULT 'cliente'
 );
 
-🧾 Tabla ventas
+Tabla carrito
+CREATE TABLE Carrito (
+  id_usuario INT,
+  id_producto INT,
+  cantidad INT,
+  PRIMARY KEY(id_usuario, id_producto),
+  FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
+  FOREIGN KEY (id_producto) REFERENCES productos(id)
+);
+
+Tabla ventas
 CREATE TABLE ventas (
   id INT PRIMARY KEY IDENTITY(1,1),
   id_usuario INT,
@@ -88,7 +130,7 @@ CREATE TABLE ventas (
   FOREIGN KEY (id_producto) REFERENCES productos(id)
 );
 
-⭐ Convertir un usuario en administrador
+Convertir un usuario en administrador
 UPDATE usuarios SET rol = 'admin' WHERE email = 'admin@tienda.com';
 
 🔌 Conexión a SQL Server (ConexionDB.java)
@@ -108,62 +150,51 @@ public static Connection getConexion() {
     }
 }
 
-
-✔ Requiere agregar el driver .jar en Tomcat/lib
-✔ Requiere mssql-jdbc_auth-x64.dll en C:\Windows\System32
-
 🌐 Principales Controladores (Servlets)
-🔐 LoginServlet — Autenticación + Roles
 
-Redirección automática según rol:
+LoginServlet — Autenticación + Roles.
 
-if (u.getRol().equals("admin")) {
-    response.sendRedirect("productos");    // Panel admin (CRUD)
-} else {
-    response.sendRedirect("catalogo.jsp"); // Vista cliente
-}
+CarritoServlet — Gestión del carrito (agregar, actualizar, eliminar, vaciar).
 
+HomeServlet / TiendaServlet — Listado de productos y filtrado por categorías.
 
-Incluye validación para mostrar:
+Validaciones:
 
-Botón de “Agregar al carrito” sólo si el usuario está logueado
+Botón "Agregar al carrito" solo visible si el usuario está logueado.
 
-Mensaje de advertencia si no tiene sesión
+Mensaje de advertencia si no tiene sesión.
 
-🎨 Vistas JSP — Ejemplo (productos.jsp)
-<c:forEach var="p" items="${lista}">
-    ${p.id}
-    ${p.nombre}
-    ${p.precioUSD}
-    ${p.stock}
-    ${p.categoria}
-</c:forEach>
+Stock limitado y respetado en todo momento.
+
+🎨 Vistas JSP
+
+Tienda.jsp / Catalogo.jsp — Catálogo dinámico y filtrado por categoría.
+
+VerCarrito.jsp — Carrito dinámico con actualización de cantidades, stock respetado y botón para eliminar productos.
+
+FormularioNuevoProducto.jsp — Registro de productos con CSS moderno y responsive.
 
 ⚙️ Migración a Tomcat 10 (Jakarta EE)
 
-Este proyecto ya utiliza:
+Todos los imports javax reemplazados por jakarta.
 
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
+Compatible 100% con Tomcat 10.1.x.
 
-
-❌ No funcionan imports javax. (Tomcat 9)
-✔ Compatible 100% con Tomcat 10.1.x
+No funciona en Tomcat 9.
 
 ▶️ Cómo Ejecutar el Proyecto
-1️⃣ Importar en NetBeans / IntelliJ
 
-Abrir como proyecto Maven.
+Importar en NetBeans / IntelliJ como proyecto Maven.
 
-2️⃣ Instalar dependencias
+Instalar dependencias:
+
 mvn clean install
 
-3️⃣ Configurar Tomcat 10
 
-Agregar servidor → seleccionar Jakarta EE.
+Configurar Tomcat 10.
 
-4️⃣ Ejecutar en navegador
+Ejecutar en navegador:
+
 http://localhost:8080/TiendaWeb/
 http://localhost:8080/TiendaWeb/login
 http://localhost:8080/TiendaWeb/productos   (Admin)
@@ -171,25 +202,42 @@ http://localhost:8080/TiendaWeb/catalogo    (Cliente)
 
 📌 Estado Actual del Proyecto
 
-✔ Arquitectura en capas
-✔ JSP + Servlets 100% funcionales
-✔ CRUD de productos operativo
-✔ Inicio de sesión + roles admin/cliente
-✔ Carrito: botón de agregar funcionando
-✔ Catálogo dinámico
-✔ Conexión SQL Server estable
-✔ Migración completa a Tomcat 10 (Jakarta)
-✔ Panel Administrativo en Java Swing
-✔ Sistema escalable y mantenible
+✅ Arquitectura en capas
+
+✅ JSP + Servlets 100% funcionales
+
+✅ CRUD de productos operativo
+
+✅ Inicio de sesión + roles admin/cliente
+
+✅ Carrito de compras: botón de agregar, actualizar, eliminar productos
+
+✅ Catálogo dinámico con filtrado por categoría
+
+✅ Stock respetado en todo momento
+
+✅ Conexión SQL Server estable
+
+✅ Migración completa a Tomcat 10 (Jakarta)
+
+✅ Panel Administrativo en Java Swing
+
+✅ CSS moderno y responsive
 
 🧩 Próximos Módulos
 
-🔐 Autenticación más robusta
-🧺 Carrito completo (ver / incrementar / eliminar / total)
-💱 Conversión USD → COP automática
+🔐 Autenticación más robusta (hash de contraseñas, sesiones seguras)
+
+🧺 Carrito completo con checkout y persistencia
+
+💱 Conversión automática USD → COP
+
 📦 Módulo de checkout
+
 📊 Reportes de ventas
-🛡 Filtros de seguridad avanzados (filtros + listeners)
+
+🛡 Filtros de seguridad avanzados (filters, listeners)
+
 ⭐ Mejoras visuales con Bootstrap / Tailwind
 
 📜 Licencia
