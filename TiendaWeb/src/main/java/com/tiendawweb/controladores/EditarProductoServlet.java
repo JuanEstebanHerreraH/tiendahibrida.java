@@ -32,3 +32,4 @@ public class EditarProductoServlet extends HttpServlet {
                .forward(request, response);
     }
 }
+

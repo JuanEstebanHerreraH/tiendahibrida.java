@@ -9,9 +9,27 @@ private String descripcion;
 private double precio;
 private int stock;
 private String imagen;
+private double subtotal;      
+
+    public byte[] getImagenBlob() {
+        return imagenBlob;
+    }
+
+    public void setImagenBlob(byte[] imagenBlob) {
+        this.imagenBlob = imagenBlob;
+    }
+    private byte[] imagenBlob;
 
 public int getstock() { return stock; }
 public void setstock(int stock) { this.stock = stock; }
+
+public double getSubtotal() {
+    return subtotal;
+}
+
+public void setSubtotal(double subtotal) {
+    this.subtotal = subtotal;
+}
 
     public int getId() {
         return id;

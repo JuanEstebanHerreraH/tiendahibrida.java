@@ -1,134 +1,67 @@
 <%@page import="com.com.tienda.modelo.entidades.Producto"%>
 <%@page import="com.com.tienda.modelo.entidades.Usuario"%>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html;charset=UTF-8" language="java" %>
+
+<%
+    Usuario u = (Usuario) session.getAttribute("usuario");
+    if(u==null){ response.sendRedirect("login.jsp"); return; }
+
+    Producto producto = (Producto) request.getAttribute("producto");
+    if(producto==null){ response.sendRedirect("productos"); return; }
+%>
+
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Editar Producto</title>
-    <meta charset="UTF-8">
-    <style>
-        body {
-            background: #f4f4f4;
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
-
-        h1, h2 {
-            text-align: center;
-            color: #0077ff;
-        }
-
-        form {
-            background: white;
-            padding: 20px;
-            width: 400px;
-            margin: 20px auto;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-
-        input[type="text"], input[type="number"] {
-            width: 100%;
-            padding: 8px;
-            margin: 5px 0 15px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        button {
-            background-color: #0077ff;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #005ace;
-        }
-
-        .links {
-            text-align: center;
-            margin-top: 15px;
-        }
-
-        .links a {
-            display: inline-block;
-            margin: 5px;
-            padding: 8px 12px;
-            background-color: #0077ff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-        }
-
-        .links a:hover {
-            background-color: #005ace;
-        }
-
-        .links a.logout {
-            background-color: #d10000;
-        }
-
-        .links a.logout:hover {
-            background-color: #a00000;
-        }
-    </style>
+<meta charset="UTF-8">
+<title>Editar Producto</title>
+<style>
+:root { --bg:#f0f2f5; --card:#fff; --primary:#4a6cf7; --primary-dark:#3854c8; --shadow: rgba(0,0,0,0.12);}
+body { margin:0; padding:0; background: var(--bg); font-family:"Segoe UI", Arial, sans-serif; }
+.container { max-width:480px; margin:60px auto; background:var(--card); padding:35px; border-radius:18px; box-shadow:0 8px 20px var(--shadow);}
+label { display:block; margin-bottom:6px; font-weight:600; }
+input[type="text"], input[type="number"], input[type="file"] { width:100%; padding:12px; margin-bottom:18px; border:2px solid #dfe4ea; border-radius:10px; font-size:15px; }
+button { width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:10px; font-size:17px; font-weight:bold; cursor:pointer; margin-top:10px;}
+button:hover { background: var(--primary-dark);}
+.preview-img { width:100%; height:200px; object-fit:cover; border-radius:10px; margin-bottom:15px; }
+</style>
+<script>
+function previewImage(input){
+    const preview = document.getElementById('imgPreview');
+    if(input.files && input.files[0]){
+        const reader = new FileReader();
+        reader.onload = e => preview.src = e.target.result;
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
 </head>
 <body>
 
-<%
-    Producto p = (Producto) request.getAttribute("producto");
-
-    if (p == null) {
-%>
-        <h2>Error: no se pudo cargar el producto.</h2>
-        <div class="links">
-            <a href="productos">Volver</a>
-        </div>
-<%
-        return;
-    }
-
-    Usuario u = (Usuario) session.getAttribute("usuario");
-
-    if (u == null) {
-        response.sendRedirect("login.jsp");
-        return;
-    }
-%>
-
+<div class="container">
 <h1>Editar Producto</h1>
+<form action="ActualizarProducto" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="id" value="<%= producto.getId() %>">
+    <input type="hidden" name="imagenActual" value="<%= producto.getImagen() != null ? producto.getImagen() : "default.jpg" %>">
 
-<form action="ActualizarProducto" method="post">
+    <label>Nombre del producto</label>
+    <input type="text" name="nombre" value="<%= producto.getNombre() %>" required>
 
-    <input type="hidden" name="id" value="<%= p.getId() %>">
+    <label>Precio (USD)</label>
+    <input type="number" name="precio" step="0.01" value="<%= producto.getPrecio() %>" required>
 
-    Nombre:  
-    <input type="text" name="nombre" value="<%= p.getNombre() %>">  
+    <label>Stock disponible</label>
+    <input type="number" name="stock" value="<%= producto.getStock() %>" required>
 
-    Precio USD:  
-    <input type="number" step="0.01" name="precio" value="<%= p.getPrecio() %>">  
+    <label>Categoría</label>
+    <input type="text" name="categoria" value="<%= producto.getDescripcion() %>" required>
 
-    Stock:  
-    <input type="number" name="stock" value="<%= p.getStock() %>">  
+    <label>Imagen</label>
+    <input type="file" name="imagen" accept="image/*" onchange="previewImage(this)">
+    <img id="imgPreview" class="preview-img" src="ImagenProducto?id=<%= producto.getId() %>" alt="Vista previa">
 
-    Categoría:  
-    <input type="text" name="categoria" value="<%= p.getDescripcion() %>">  
-
-    Imagen URL:  
-    <input type="text" name="imagen" value="<%= p.getImagen() %>">  
-
-    <button type="submit">Guardar Cambios</button>
-
+    <button type="submit">Actualizar Producto</button>
 </form>
-
-<div class="links">
-    <a href="logout" class="logout">Cerrar Sesión</a>
-    <a href="productos">Volver a la lista</a>
 </div>
 
 </body>

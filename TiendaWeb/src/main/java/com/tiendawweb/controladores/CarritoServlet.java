@@ -3,6 +3,7 @@ package com.tiendawweb.controladores;
 import com.com.tienda.modelo.dao.CarritoDAO;
 import com.com.tienda.modelo.entidades.Producto;
 import com.com.tienda.modelo.entidades.Usuario;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -31,15 +32,12 @@ public class CarritoServlet extends HttpServlet {
         String accion = req.getParameter("accion");
 
         try {
+
             switch (accion) {
+
                 case "agregar" -> {
                     int idProducto = Integer.parseInt(req.getParameter("id"));
-                    int stockBase = carritoDAO.obtenerStockProducto(idProducto);
-                    int cantidadActual = carritoDAO.obtenerCantidadEnCarrito(idUsuario, idProducto);
-
-                    if (cantidadActual < stockBase) {
-                        carritoDAO.agregarProducto(idUsuario, idProducto);
-                    }
+                    carritoDAO.agregarProducto(idUsuario, idProducto);
                     resp.sendRedirect("carrito?accion=ver");
                 }
 
@@ -49,22 +47,41 @@ public class CarritoServlet extends HttpServlet {
                     req.getRequestDispatcher("VerCarrito.jsp").forward(req, resp);
                 }
 
+                case "eliminar" -> {
+                    int idProducto = Integer.parseInt(req.getParameter("id"));
+                    carritoDAO.eliminarProducto(idUsuario, idProducto);
+                    resp.sendRedirect("carrito?accion=ver");
+                }
+
                 case "vaciar" -> {
                     carritoDAO.vaciarCarrito(idUsuario);
                     resp.sendRedirect("carrito?accion=ver");
                 }
-case "eliminar" -> {
-    int idProducto = Integer.parseInt(req.getParameter("id"));
-    carritoDAO.eliminarProducto(idUsuario, idProducto);
-    resp.sendRedirect("carrito?accion=ver");
-}
+
+                case "comprar" -> {
+                    List<Producto> carrito = carritoDAO.obtenerCarrito(idUsuario);
+                    double total = carritoDAO.calcularTotal(idUsuario);
+
+                    int idVenta = carritoDAO.crearVenta(idUsuario, total);
+
+                    for (Producto p : carrito) {
+                        carritoDAO.registrarDetalle(idVenta, p);
+                        carritoDAO.descontarStock(p.getId(), p.getStock());
+                    }
+
+                    carritoDAO.vaciarCarrito(idUsuario);
+
+                    resp.sendRedirect("factura?id=" + idVenta);
+                }
 
                 default -> resp.sendRedirect("tienda");
             }
+
         } catch (Exception e) {
             throw new ServletException("Error en carrito", e);
         }
     }
+
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -87,9 +104,8 @@ case "eliminar" -> {
                 String param = req.getParameter("cantidad_" + p.getId());
                 if (param != null) {
                     int cantidad = Integer.parseInt(param);
-
-                    // Limitar cantidad al stock real
                     int stockBase = carritoDAO.obtenerStockProducto(p.getId());
+
                     if (cantidad < 1) cantidad = 1;
                     if (cantidad > stockBase) cantidad = stockBase;
 
@@ -100,7 +116,7 @@ case "eliminar" -> {
             resp.sendRedirect("carrito?accion=ver");
 
         } catch (Exception e) {
-            throw new ServletException("Error al actualizar el carrito", e);
+            throw new ServletException("Error al actualizar carrito", e);
         }
     }
 }

@@ -4,41 +4,83 @@
 <head>
     <meta charset="UTF-8">
     <title>Registro de Usuario</title>
+
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: #f2f2f2;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+
+            background: linear-gradient(135deg, #81ecec, #74b9ff);
+            font-family: "Segoe UI", Arial, sans-serif;
         }
+
         .form-container {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            width: 350px;
-            box-shadow: 0px 0px 10px rgba(0,0,0,0.15);
+            width: 380px;
+            background: #ffffff;
+            padding: 35px 30px;
+            border-radius: 16px;
+            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+            animation: fadeIn 0.35s ease;
         }
+
+        h2 {
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 25px;
+            font-size: 26px;
+            color: #2d3436;
+            font-weight: 700;
+        }
+
+        label {
+            font-size: 14px;
+            color: #636e72;
+            font-weight: 600;
+            margin-top: 15px;
+            display: block;
+        }
+
         input, select {
             width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            border-radius: 5px;
-            border: 1px solid #aaa;
+            padding: 12px;
+            margin-top: 6px;
+            border-radius: 10px;
+            border: 2px solid #dfe6e9;
+            font-size: 15px;
+            transition: 0.25s;
         }
+
+        input:focus, select:focus {
+            border-color: #0984e3;
+            box-shadow: 0 0 8px rgba(9,132,227,0.3);
+            outline: none;
+        }
+
         button {
             width: 100%;
-            padding: 10px;
-            background: #007bff;
-            border: none;
+            padding: 12px;
+            margin-top: 25px;
+            background: #0984e3;
             color: white;
-            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
             cursor: pointer;
-            margin-top: 10px;
+            transition: 0.25s;
         }
+
         button:hover {
-            background: #0056b3;
+            background: #0767b3;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>

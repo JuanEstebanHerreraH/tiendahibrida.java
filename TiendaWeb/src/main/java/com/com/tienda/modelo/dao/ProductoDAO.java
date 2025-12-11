@@ -10,7 +10,7 @@ public class ProductoDAO {
     // LISTAR TODOS LOS PRODUCTOS
     public List<Producto> listar() {
         List<Producto> lista = new ArrayList<>();
-        String sql = "SELECT id, nombre, descripcion, precio, stock, imagen FROM productos";
+        String sql = "SELECT id, nombre, descripcion, precio, stock, imagen, imagen_blob FROM productos";
 
         try (Connection con = ConexionDB.getConexion();
              PreparedStatement ps = con.prepareStatement(sql);
@@ -24,6 +24,7 @@ public class ProductoDAO {
                 p.setPrecio(rs.getDouble("precio"));
                 p.setStock(rs.getInt("stock"));
                 p.setImagen(rs.getString("imagen"));
+                p.setImagenBlob(rs.getBytes("imagen_blob"));
                 lista.add(p);
             }
 
@@ -34,11 +35,9 @@ public class ProductoDAO {
         return lista;
     }
 
-    // AGREGAR PRODUCTO
+    // AGREGAR PRODUCTO CON BLOB (para subir imagen desde la página)
     public boolean agregar(Producto p) {
-        String sql = "INSERT INTO productos (nombre, descripcion, precio, stock, imagen) "
-                   + "VALUES (?, ?, ?, ?, ?)";
-
+        String sql = "INSERT INTO productos (nombre, descripcion, precio, stock, imagen_blob) VALUES (?, ?, ?, ?, ?)";
         try (Connection con = ConexionDB.getConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -46,7 +45,11 @@ public class ProductoDAO {
             ps.setString(2, p.getDescripcion());
             ps.setDouble(3, p.getPrecio());
             ps.setInt(4, p.getStock());
-            ps.setString(5, p.getImagen());
+            if (p.getImagenBlob() != null) {
+                ps.setBytes(5, p.getImagenBlob());
+            } else {
+                ps.setNull(5, Types.BLOB);
+            }
 
             return ps.executeUpdate() > 0;
 
@@ -59,13 +62,12 @@ public class ProductoDAO {
     // BUSCAR PRODUCTO POR ID
     public Producto buscar(int id) {
         Producto p = null;
-        String sql = "SELECT id, nombre, descripcion, precio, stock, imagen FROM productos WHERE id = ?";
+        String sql = "SELECT id, nombre, descripcion, precio, stock, imagen, imagen_blob FROM productos WHERE id = ?";
 
         try (Connection con = ConexionDB.getConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, id);
-
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     p = new Producto();
@@ -75,6 +77,7 @@ public class ProductoDAO {
                     p.setPrecio(rs.getDouble("precio"));
                     p.setStock(rs.getInt("stock"));
                     p.setImagen(rs.getString("imagen"));
+                    p.setImagenBlob(rs.getBytes("imagen_blob"));
                 }
             }
 
@@ -85,11 +88,9 @@ public class ProductoDAO {
         return p;
     }
 
-    // ACTUALIZAR PRODUCTO
+    // ACTUALIZAR PRODUCTO CON BLOB
     public boolean actualizar(Producto p) {
-        String sql = "UPDATE productos SET nombre=?, descripcion=?, precio=?, stock=?, imagen=? "
-                   + "WHERE id = ?";
-
+        String sql = "UPDATE productos SET nombre=?, descripcion=?, precio=?, stock=?, imagen_blob=? WHERE id=?";
         try (Connection con = ConexionDB.getConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -97,7 +98,11 @@ public class ProductoDAO {
             ps.setString(2, p.getDescripcion());
             ps.setDouble(3, p.getPrecio());
             ps.setInt(4, p.getStock());
-            ps.setString(5, p.getImagen());
+            if (p.getImagenBlob() != null) {
+                ps.setBytes(5, p.getImagenBlob());
+            } else {
+                ps.setNull(5, Types.BLOB);
+            }
             ps.setInt(6, p.getId());
 
             return ps.executeUpdate() > 0;
@@ -111,7 +116,6 @@ public class ProductoDAO {
     // ELIMINAR PRODUCTO
     public boolean eliminar(int id) {
         String sql = "DELETE FROM productos WHERE id = ?";
-
         try (Connection con = ConexionDB.getConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -123,53 +127,50 @@ public class ProductoDAO {
             return false;
         }
     }
+
     // OBTENER PRODUCTOS POR CATEGORIA
-public List<Producto> obtenerPorCategoria(String categoria) {
-    List<Producto> lista = new ArrayList<>();
-    String sql = "SELECT id, nombre, descripcion, precio, stock, imagen FROM productos WHERE descripcion = ?";
+    public List<Producto> obtenerPorCategoria(String categoria) {
+        List<Producto> lista = new ArrayList<>();
+        String sql = "SELECT id, nombre, descripcion, precio, stock, imagen, imagen_blob FROM productos WHERE descripcion=?";
+        try (Connection con = ConexionDB.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
-    try (Connection con = ConexionDB.getConexion();
-         PreparedStatement ps = con.prepareStatement(sql)) {
-
-        ps.setString(1, categoria);
-        try (ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                Producto p = new Producto();
-                p.setId(rs.getInt("id"));
-                p.setNombre(rs.getString("nombre"));
-                p.setDescripcion(rs.getString("descripcion"));
-                p.setPrecio(rs.getDouble("precio"));
-                p.setStock(rs.getInt("stock"));
-                p.setImagen(rs.getString("imagen"));
-                lista.add(p);
+            ps.setString(1, categoria);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Producto p = new Producto();
+                    p.setId(rs.getInt("id"));
+                    p.setNombre(rs.getString("nombre"));
+                    p.setDescripcion(rs.getString("descripcion"));
+                    p.setPrecio(rs.getDouble("precio"));
+                    p.setStock(rs.getInt("stock"));
+                    p.setImagen(rs.getString("imagen"));
+                    p.setImagenBlob(rs.getBytes("imagen_blob"));
+                    lista.add(p);
+                }
             }
-        }
 
-    } catch (Exception e) {
-        System.out.println("Error obtener productos por categoría: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error obtener productos por categoría: " + e.getMessage());
+        }
+        return lista;
     }
 
-    return lista;
-}
+    // OBTENER TODAS LAS CATEGORIAS (DISTINTAS)
+    public List<String> obtenerCategorias() {
+        List<String> categorias = new ArrayList<>();
+        String sql = "SELECT DISTINCT descripcion FROM productos";
+        try (Connection con = ConexionDB.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
 
-// OBTENER TODAS LAS CATEGORIAS (DISTINTAS)
-public List<String> obtenerCategorias() {
-    List<String> categorias = new ArrayList<>();
-    String sql = "SELECT DISTINCT descripcion FROM productos";
+            while (rs.next()) {
+                categorias.add(rs.getString("descripcion"));
+            }
 
-    try (Connection con = ConexionDB.getConexion();
-         PreparedStatement ps = con.prepareStatement(sql);
-         ResultSet rs = ps.executeQuery()) {
-
-        while (rs.next()) {
-            categorias.add(rs.getString("descripcion"));
+        } catch (Exception e) {
+            System.out.println("Error obtener categorias: " + e.getMessage());
         }
-
-    } catch (Exception e) {
-        System.out.println("Error obtener categorias: " + e.getMessage());
+        return categorias;
     }
-
-    return categorias;
-}
-
 }

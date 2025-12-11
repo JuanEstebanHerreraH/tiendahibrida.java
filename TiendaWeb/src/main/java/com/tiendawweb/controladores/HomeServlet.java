@@ -36,7 +36,7 @@ public class HomeServlet extends HttpServlet {
             throw new ServletException("Error al cargar datos de la tienda", e);
         }
 
-        request.getRequestDispatcher("Tienda.jsp").forward(request, response);
+        request.getRequestDispatcher("index.jsp").forward(request, response);
     }
 }
 
