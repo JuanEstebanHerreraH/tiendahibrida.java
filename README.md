@@ -2,10 +2,10 @@
 
 Aplicación web completa de e-commerce desarrollada con Java 17/22, Jakarta EE, JSP, Servlets, Maven, Tomcat 10, SQL Server y un panel de administración de escritorio en Java Swing.
 
-Esta versión incluye mejoras en el carrito de compras, gestión de stock, filtrado por categorías, y un frontend más amigable.
+Esta versión incluye mejoras en el carrito de compras, gestión de stock, filtrado por categorías, y un frontend moderno y responsive.
 
 ✅ Funcionalidades Principales
-Autenticación y Roles
+1. Autenticación y Roles
 
 Registro e inicio de sesión.
 
@@ -19,11 +19,9 @@ if (u.getRol().equals("admin")) {
     response.sendRedirect("catalogo.jsp"); // Vista cliente
 }
 
-Gestión de Productos (CRUD)
+2. Gestión de Productos (CRUD)
 
-Administración vía Swing (Desktop).
-
-Panel web con JSP para clientes.
+Administración vía Swing Desktop y panel web.
 
 CRUD completo: agregar, actualizar, eliminar.
 
@@ -31,19 +29,21 @@ Filtrado por categorías dinámicas.
 
 Validación de stock y cantidad en carrito.
 
-Carrito de Compras
+Imágenes guardadas como BLOB y opcionalmente como nombre de archivo.
 
-Agregar productos al carrito respetando stock disponible.
+3. Carrito de Compras
+
+Agregar productos respetando stock disponible.
 
 Actualizar cantidades con límites según stock.
 
 Eliminar productos individualmente.
 
-Cálculo de total por producto y total general.
+Cálculo de subtotal por producto y total general.
 
-Visualización dinámica en JSP con diseño moderno.
+Visualización dinámica en JSP con diseño moderno y responsive.
 
-Arquitectura y Conexión
+4. Arquitectura y Conexión
 
 Arquitectura en capas: DAO, Entidades, Servlets, JSP.
 
@@ -54,6 +54,7 @@ Migración completa javax → jakarta para Tomcat 10.
 Código limpio, mantenible y escalable.
 
 🚀 Tecnologías Utilizadas
+
 Backend
 
 Java 17 / 22
@@ -72,11 +73,11 @@ SQL Server 2019
 
 Frontend
 
-HTML5
-
-CSS3 (formulario de registro y carrito estilizados)
+HTML5, CSS3
 
 JSP + JSTL
+
+Diseño responsive
 
 Base de Datos
 
@@ -91,46 +92,49 @@ DLL requerida: mssql-jdbc_auth-x64.dll → C:\Windows\System32
 🗄 Estructura de Base de Datos
 Tabla productos
 CREATE TABLE productos (
-  id INT PRIMARY KEY IDENTITY(1,1),
-  nombre VARCHAR(100),
-  descripcion VARCHAR(200),
-  precio FLOAT,
-  stock INT,
-  categoria VARCHAR(50),
-  imagen VARCHAR(300)
+    id INT PRIMARY KEY IDENTITY(1,1),
+    nombre VARCHAR(100),
+    descripcion VARCHAR(200),
+    precio FLOAT,
+    stock INT,
+    categoria VARCHAR(50),
+    imagen VARCHAR(300),
+    imagen_blob VARBINARY(MAX)
 );
 
 Tabla usuarios
 CREATE TABLE usuarios (
-  id INT PRIMARY KEY IDENTITY(1,1),
-  nombre VARCHAR(100),
-  email VARCHAR(100),
-  password VARCHAR(100),
-  rol VARCHAR(20) NOT NULL DEFAULT 'cliente'
+    id INT PRIMARY KEY IDENTITY(1,1),
+    nombre VARCHAR(100),
+    email VARCHAR(100),
+    password VARCHAR(100),
+    rol VARCHAR(20) NOT NULL DEFAULT 'cliente'
 );
 
 Tabla carrito
 CREATE TABLE Carrito (
-  id_usuario INT,
-  id_producto INT,
-  cantidad INT,
-  PRIMARY KEY(id_usuario, id_producto),
-  FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
-  FOREIGN KEY (id_producto) REFERENCES productos(id)
+    id_usuario INT,
+    id_producto INT,
+    cantidad INT,
+    PRIMARY KEY(id_usuario, id_producto),
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
+    FOREIGN KEY (id_producto) REFERENCES productos(id)
 );
 
 Tabla ventas
 CREATE TABLE ventas (
-  id INT PRIMARY KEY IDENTITY(1,1),
-  id_usuario INT,
-  id_producto INT,
-  cantidad INT,
-  fecha DATETIME,
-  FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
-  FOREIGN KEY (id_producto) REFERENCES productos(id)
+    id INT PRIMARY KEY IDENTITY(1,1),
+    id_usuario INT,
+    id_producto INT,
+    cantidad INT,
+    fecha DATETIME,
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
+    FOREIGN KEY (id_producto) REFERENCES productos(id)
 );
 
-Convertir un usuario en administrador
+
+Convertir un usuario en administrador:
+
 UPDATE usuarios SET rol = 'admin' WHERE email = 'admin@tienda.com';
 
 🔌 Conexión a SQL Server (ConexionDB.java)
@@ -154,7 +158,7 @@ public static Connection getConexion() {
 
 LoginServlet — Autenticación + Roles.
 
-CarritoServlet — Gestión del carrito (agregar, actualizar, eliminar, vaciar).
+CarritoServlet — Gestión del carrito (agregar, actualizar, eliminar, vaciar, comprar).
 
 HomeServlet / TiendaServlet — Listado de productos y filtrado por categorías.
 
@@ -168,19 +172,17 @@ Stock limitado y respetado en todo momento.
 
 🎨 Vistas JSP
 
-Tienda.jsp / Catalogo.jsp — Catálogo dinámico y filtrado por categoría.
+tienda.jsp / catalogo.jsp — Catálogo dinámico, filtrado por categoría, carga de imágenes desde BLOB.
 
-VerCarrito.jsp — Carrito dinámico con actualización de cantidades, stock respetado y botón para eliminar productos.
+verCarrito.jsp — Carrito dinámico con actualización de cantidades, stock respetado y botón para eliminar productos.
 
-FormularioNuevoProducto.jsp — Registro de productos con CSS moderno y responsive.
+formularioNuevoProducto.jsp — Registro de productos con CSS moderno y responsive.
 
 ⚙️ Migración a Tomcat 10 (Jakarta EE)
 
 Todos los imports javax reemplazados por jakarta.
 
-Compatible 100% con Tomcat 10.1.x.
-
-No funciona en Tomcat 9.
+Compatible 100% con Tomcat 10.1.x (no funciona en Tomcat 9).
 
 ▶️ Cómo Ejecutar el Proyecto
 
@@ -203,42 +205,24 @@ http://localhost:8080/TiendaWeb/catalogo    (Cliente)
 📌 Estado Actual del Proyecto
 
 ✅ Arquitectura en capas
-
 ✅ JSP + Servlets 100% funcionales
-
 ✅ CRUD de productos operativo
-
 ✅ Inicio de sesión + roles admin/cliente
-
-✅ Carrito de compras: botón de agregar, actualizar, eliminar productos
-
+✅ Carrito de compras: agregar, actualizar, eliminar productos
 ✅ Catálogo dinámico con filtrado por categoría
-
-✅ Stock respetado en todo momento
-
+✅ Stock respetado
 ✅ Conexión SQL Server estable
-
-✅ Migración completa a Tomcat 10 (Jakarta)
-
+✅ Migración completa a Tomcat 10
 ✅ Panel Administrativo en Java Swing
-
-✅ CSS moderno y responsive
+✅ Imágenes de productos cargadas desde BLOB
 
 🧩 Próximos Módulos
 
-🔐 Autenticación más robusta (hash de contraseñas, sesiones seguras)
-
-🧺 Carrito completo con checkout y persistencia
-
-💱 Conversión automática USD → COP
-
-📦 Módulo de checkout
+💱 Conversión automática (API)
 
 📊 Reportes de ventas
 
-🛡 Filtros de seguridad avanzados (filters, listeners)
-
-⭐ Mejoras visuales con Bootstrap / Tailwind
+⭐ Aplicacíon para administradores
 
 📜 Licencia
 
