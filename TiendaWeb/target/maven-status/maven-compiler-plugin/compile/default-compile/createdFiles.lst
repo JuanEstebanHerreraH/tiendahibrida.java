@@ -1,6 +1,7 @@
 com\com\tienda\modelo\dao\VentaDAO.class
 com\mycompany\tiendaweb\filtros\AuthFilter.class
 com\tiendawweb\controladores\Login.class
+com\tiendaweb\filtros\AdminFilter\java\AdminFilter.class
 com\tiendawweb\controladores\FacturaServlet.class
 com\tiendawweb\controladores\ProductoServlet.class
 com\com\tienda\modelo\dao\ConexionDB.class

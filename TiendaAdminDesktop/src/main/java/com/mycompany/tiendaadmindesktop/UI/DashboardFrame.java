@@ -1,0 +1,30 @@
+package com.mycompany.tiendaadmindesktop.UI;
+
+import javax.swing.*;
+
+public class DashboardFrame extends JFrame {
+
+    public DashboardFrame() {
+
+        setTitle("Panel Admin");
+        setSize(400, 300);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        JButton btnProductos = new JButton("Productos");
+        JButton btnLogs = new JButton("Logs");
+
+        btnProductos.addActionListener(e ->
+            new ProductoFrame());
+
+        btnLogs.addActionListener(e ->
+            new LogsFrame());
+
+        JPanel panel = new JPanel();
+        panel.add(btnProductos);
+        panel.add(btnLogs);
+
+        add(panel);
+        setVisible(true);
+    }
+}
