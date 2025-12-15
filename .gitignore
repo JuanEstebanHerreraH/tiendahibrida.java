@@ -1,1 +1,18 @@
-/TiendaAdminDesktop/target/
+# NetBeans / Maven / Java
+/target/
+/.nb-gradle/
+/build/
+/out/
+
+# Archivos de configuración locales
+.env
+
+# IDE específicos
+*.iml
+*.class
+.idea/
+*.log
+
+# OS específicos
+.DS_Store
+Thumbs.db
