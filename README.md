@@ -90,7 +90,9 @@ SQL Server con autenticación Windows (integratedSecurity=true)
 
 🗄 Base de Datos
 SQL para la creación de tablas:
+
 CREATE TABLE productos (
+
     id INT PRIMARY KEY IDENTITY(1,1),
     nombre VARCHAR(100),
     descripcion VARCHAR(200),
@@ -99,26 +101,32 @@ CREATE TABLE productos (
     categoria VARCHAR(50),
     imagen VARCHAR(300),
     imagen_blob VARBINARY(MAX)
+    
 );
 
 CREATE TABLE usuarios (
+
     id INT PRIMARY KEY IDENTITY(1,1),
     nombre VARCHAR(100),
     email VARCHAR(100),
     password VARCHAR(100),
     rol VARCHAR(20) NOT NULL DEFAULT 'cliente'
+    
 );
 
 CREATE TABLE Carrito (
+
     id_usuario INT,
     id_producto INT,
     cantidad INT,
     PRIMARY KEY(id_usuario, id_producto),
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
     FOREIGN KEY (id_producto) REFERENCES productos(id)
+    
 );
 
 CREATE TABLE ventas (
+
     id INT PRIMARY KEY IDENTITY(1,1),
     id_usuario INT,
     id_producto INT,
@@ -126,19 +134,23 @@ CREATE TABLE ventas (
     fecha DATETIME,
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
     FOREIGN KEY (id_producto) REFERENCES productos(id)
+    
 );
 
 Convertir un usuario en administrador:
 UPDATE usuarios SET rol = 'admin' WHERE email = 'admin@tienda.com';
 
 🔌 Conexión a SQL Server (ConexionDB.java)
+
 private static final String URL = "jdbc:sqlserver://localhost:1433;"
+
         + "databaseName=tienda_db;"
         + "encrypt=false;"
         + "trustServerCertificate=true;"
         + "integratedSecurity=true;";
 
 public static Connection getConexion() {
+
     try {
         Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
         return DriverManager.getConnection(URL);
@@ -146,6 +158,7 @@ public static Connection getConexion() {
         System.out.println("Error al conectar: " + e.getMessage());
         return null;
     }
+    
 }
 
 🌐 Principales Servlets
