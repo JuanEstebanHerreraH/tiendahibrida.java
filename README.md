@@ -1,8 +1,8 @@
 🛒 Tienda Web — Java, Jakarta EE, JSP, Servlets, SQL Server & Swing Admin Panel
 
-Aplicación web completa de e-commerce desarrollada con Java 17/22, Jakarta EE, JSP, Servlets, Maven, Tomcat 10, SQL Server y un panel de administración de escritorio en Java Swing.
+Aplicación web completa de e-commerce desarrollada con Java 17/22, Jakarta EE, JSP, Servlets, Maven, Tomcat 10, SQL Server, y un panel administrativo de escritorio en Java Swing.
 
-Esta versión incluye mejoras en el carrito de compras, gestión de stock, filtrado por categorías, y un frontend moderno y responsive.
+Esta versión incluye mejoras en el carrito de compras, gestión de stock, filtrado por categorías y un frontend moderno y responsive.
 
 ✅ Funcionalidades Principales
 1. Autenticación y Roles
@@ -25,7 +25,7 @@ Administración vía Swing Desktop y panel web.
 
 CRUD completo: agregar, actualizar, eliminar.
 
-Filtrado por categorías dinámicas.
+Filtrado dinámico por categorías.
 
 Validación de stock y cantidad en carrito.
 
@@ -55,42 +55,19 @@ Código limpio, mantenible y escalable.
 
 🚀 Tecnologías Utilizadas
 
-Backend
+Backend:
+Java 17/22, Jakarta EE (Servlet API), JSP + JSTL, JDBC, Maven, Tomcat 10.1.x, SQL Server 2019
 
-Java 17 / 22
+Frontend:
+HTML5, CSS3, JSP + JSTL, Diseño responsive
 
-Jakarta EE (Servlet API)
+Base de Datos:
+SQL Server con autenticación Windows (integratedSecurity=true)
 
-JSP + JSTL
+🗄 Base de Datos
 
-JDBC
+Nota: Código SQL formateado para mejor lectura en GitHub
 
-Maven
-
-Tomcat 10.1.x
-
-SQL Server 2019
-
-Frontend
-
-HTML5, CSS3
-
-JSP + JSTL
-
-Diseño responsive
-
-Base de Datos
-
-SQL Server
-
-Driver JDBC: mssql-jdbc-13.x.jre11.jar
-
-Autenticación Windows: integratedSecurity=true
-
-DLL requerida: mssql-jdbc_auth-x64.dll → C:\Windows\System32
-
-🗄 Estructura de Base de Datos
-Tabla productos
 CREATE TABLE productos (
     id INT PRIMARY KEY IDENTITY(1,1),
     nombre VARCHAR(100),
@@ -102,7 +79,6 @@ CREATE TABLE productos (
     imagen_blob VARBINARY(MAX)
 );
 
-Tabla usuarios
 CREATE TABLE usuarios (
     id INT PRIMARY KEY IDENTITY(1,1),
     nombre VARCHAR(100),
@@ -111,7 +87,6 @@ CREATE TABLE usuarios (
     rol VARCHAR(20) NOT NULL DEFAULT 'cliente'
 );
 
-Tabla carrito
 CREATE TABLE Carrito (
     id_usuario INT,
     id_producto INT,
@@ -121,7 +96,6 @@ CREATE TABLE Carrito (
     FOREIGN KEY (id_producto) REFERENCES productos(id)
 );
 
-Tabla ventas
 CREATE TABLE ventas (
     id INT PRIMARY KEY IDENTITY(1,1),
     id_usuario INT,
@@ -154,15 +128,15 @@ public static Connection getConexion() {
     }
 }
 
-🌐 Principales Controladores (Servlets)
+🌐 Principales Servlets
 
-LoginServlet — Autenticación + Roles.
+LoginServlet: Autenticación + Roles
 
-CarritoServlet — Gestión del carrito (agregar, actualizar, eliminar, vaciar, comprar).
+CarritoServlet: Gestión del carrito (agregar, actualizar, eliminar, vaciar, comprar)
 
-HomeServlet / TiendaServlet — Listado de productos y filtrado por categorías.
+HomeServlet / TiendaServlet: Listado de productos y filtrado por categorías
 
-Validaciones:
+Validaciones importantes:
 
 Botón "Agregar al carrito" solo visible si el usuario está logueado.
 
@@ -172,17 +146,25 @@ Stock limitado y respetado en todo momento.
 
 🎨 Vistas JSP
 
-tienda.jsp / catalogo.jsp — Catálogo dinámico, filtrado por categoría, carga de imágenes desde BLOB.
+tienda.jsp / catalogo.jsp: Catálogo dinámico con filtrado por categoría y carga de imágenes desde BLOB.
 
-verCarrito.jsp — Carrito dinámico con actualización de cantidades, stock respetado y botón para eliminar productos.
+verCarrito.jsp: Carrito dinámico con actualización de cantidades y botón para eliminar productos.
 
-formularioNuevoProducto.jsp — Registro de productos con CSS moderno y responsive.
+formularioNuevoProducto.jsp: Registro de productos con CSS moderno y responsive.
 
-⚙️ Migración a Tomcat 10 (Jakarta EE)
+⚙ Migración a Tomcat 10
 
-Todos los imports javax reemplazados por jakarta.
+Todos los imports javax.* reemplazados por jakarta.*.
 
 Compatible 100% con Tomcat 10.1.x (no funciona en Tomcat 9).
+
+💻 Panel Administrativo Desktop
+
+Aplicación en Java Swing para administración de productos.
+
+Actualmente en desarrollo: aún no tiene EXE.
+
+Próximos módulos: BCRPY, File, y otras funcionalidades para administración avanzada.
 
 ▶️ Cómo Ejecutar el Proyecto
 
@@ -202,10 +184,10 @@ http://localhost:8080/TiendaWeb/login
 http://localhost:8080/TiendaWeb/productos   (Admin)
 http://localhost:8080/TiendaWeb/catalogo    (Cliente)
 
-📌 Estado Actual del Proyecto
+📌 Estado Actual
 
 ✅ Arquitectura en capas
-✅ JSP + Servlets 100% funcionales
+✅ JSP + Servlets funcionales
 ✅ CRUD de productos operativo
 ✅ Inicio de sesión + roles admin/cliente
 ✅ Carrito de compras: agregar, actualizar, eliminar productos
@@ -218,11 +200,9 @@ http://localhost:8080/TiendaWeb/catalogo    (Cliente)
 
 🧩 Próximos Módulos
 
-💱 Conversión automática (API)
+Conversión automática (API)
 
-📊 Reportes de ventas
-
-⭐ Aplicacíon para administradores
+Reportes de ventas
 
 📜 Licencia
 
