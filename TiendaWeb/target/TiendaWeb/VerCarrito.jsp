@@ -1,14 +1,24 @@
-<%@page import="com.com.tienda.modelo.entidades.Producto"%>
-<%@page import="com.com.tienda.modelo.dao.CarritoDAO"%>
-<%@page import="java.util.List"%>
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ page import="com.com.tienda.modelo.entidades.Producto"%>
+<%@ page import="com.com.tienda.modelo.entidades.Usuario"%>
+<%@ page import="com.com.tienda.modelo.dao.CarritoDAO"%>
+<%@ page import="com.com.com.tienda.servicios.CurrencyService"%>
+<%@ page import="java.util.List"%>
 
 <%
 CarritoDAO carritoDAO = new CarritoDAO();
 List<Producto> carrito = (List<Producto>) request.getAttribute("carrito");
 if (carrito == null) carrito = new java.util.ArrayList<>();
 
+// Obtener usuario y moneda preferida
+Usuario u = (Usuario) session.getAttribute("usuario");
+String moneda = (u != null && u.getMonedaPreferida() != null) ? u.getMonedaPreferida() : "USD";
+
 double totalGeneral = 0;
-for (Producto p : carrito) totalGeneral += p.getPrecio() * p.getStock();
+for (Producto p : carrito) {
+    double precioConvertido = CurrencyService.convertir(p.getPrecio(), moneda);
+    totalGeneral += precioConvertido * p.getStock();
+}
 %>
 
 <!DOCTYPE html>
@@ -16,8 +26,8 @@ for (Producto p : carrito) totalGeneral += p.getPrecio() * p.getStock();
 <head>
 <meta charset="UTF-8">
 <title>Carrito</title>
-
 <style>
+/* Mantén tu CSS igual */
 body { margin: 0; background: #f2f6ff; font-family: 'Segoe UI', sans-serif; }
 .container { width: 90%; max-width: 1000px; margin: 40px auto; padding: 20px; }
 .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
@@ -45,7 +55,7 @@ tfoot td { font-weight: bold; background: #dce5ff; padding: 16px; font-size: 18p
 
 <div class="container">
 <div class="card">
-<h1>? Tu carrito de compras</h1>
+<h1>🛒 Tu carrito de compras</h1>
 
 <form action="carrito" method="post">
 
@@ -62,7 +72,9 @@ tfoot td { font-weight: bold; background: #dce5ff; padding: 16px; font-size: 18p
     </thead>
 
     <tbody>
-        <% for (Producto p : carrito) { %>
+        <% for (Producto p : carrito) { 
+               double precioConvertido = CurrencyService.convertir(p.getPrecio(), moneda);
+        %>
         <tr>
             <td><%= p.getId() %></td>
             <td>
@@ -71,7 +83,7 @@ tfoot td { font-weight: bold; background: #dce5ff; padding: 16px; font-size: 18p
                     <span><%= p.getNombre() %></span>
                 </div>
             </td>
-            <td>$<%= p.getPrecio() %></td>
+            <td><%= String.format("%.2f", precioConvertido) %> <%= moneda %></td>
             <td>
                 <input type="number"
                        name="cantidad_<%= p.getId() %>"
@@ -79,12 +91,12 @@ tfoot td { font-weight: bold; background: #dce5ff; padding: 16px; font-size: 18p
                        min="1"
                        max="<%= carritoDAO.obtenerStockProducto(p.getId()) %>">
             </td>
-            <td>$<%= p.getPrecio() * p.getStock() %></td>
+            <td><%= String.format("%.2f", precioConvertido * p.getStock()) %> <%= moneda %></td>
             <td>
                 <a class="btn btn-red"
                    href="carrito?accion=eliminar&id=<%= p.getId() %>"
-                   onclick="return confirm('�Seguro que deseas eliminar este producto?');">
-                    ?
+                   onclick="return confirm('¿Seguro que deseas eliminar este producto?');">
+                    ❌
                 </a>
             </td>
         </tr>
@@ -94,7 +106,7 @@ tfoot td { font-weight: bold; background: #dce5ff; padding: 16px; font-size: 18p
     <tfoot>
         <tr>
             <td colspan="4">TOTAL GENERAL</td>
-            <td>$<%= totalGeneral %></td>
+            <td><%= String.format("%.2f", totalGeneral) %> <%= moneda %></td>
             <td></td>
         </tr>
     </tfoot>

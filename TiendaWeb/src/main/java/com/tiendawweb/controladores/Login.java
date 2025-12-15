@@ -24,29 +24,33 @@ public class Login extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+protected void doPost(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
 
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
+    String email = request.getParameter("email");
+    String password = request.getParameter("password");
 
-        Usuario u = dao.login(email, password);
+    Usuario u = dao.login(email, password); // 🔐 BCrypt aquí
 
-        if (u != null) {
+    if (u != null) {
 
-            HttpSession sesion = request.getSession();
-            sesion.setAttribute("usuario", u);
-            sesion.setAttribute("rol", u.getRol());   // 🔥 IMPORTANTÍSIMO
+        HttpSession sesion = request.getSession();
+        sesion.setAttribute("usuario", u);
+        sesion.setAttribute("rol", u.getRol());
 
-            if (u.getRol().equals("admin")) {
-                response.sendRedirect("productos");   // admin → CRUD
-            } else {
-                response.sendRedirect("tienda");      // cliente → tienda
-            }
+        // 🔥 Guardar moneda preferida en sesión
+        sesion.setAttribute("monedaPreferida", u.getMonedaPreferida());
 
+        if ("admin".equalsIgnoreCase(u.getRol())) {
+            response.sendRedirect("productos");
         } else {
-            request.setAttribute("error", "Correo o contraseña incorrectos");
-            request.getRequestDispatcher("login.jsp").forward(request, response);
+            response.sendRedirect("tienda");
         }
+
+    } else {
+        request.setAttribute("error", "Correo o contraseña incorrectos");
+        request.getRequestDispatcher("login.jsp").forward(request, response);
     }
 }
+}
+

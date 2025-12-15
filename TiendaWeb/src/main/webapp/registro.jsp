@@ -1,12 +1,24 @@
-<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="java.util.List" %>
+<%@ page import="com.com.tienda.modelo.entidades.Usuario" %>
+
+<%
+    List<String> monedas = new java.util.ArrayList<>();
+    monedas.add("COP");
+    monedas.add("USD");
+    monedas.add("EUR");
+    monedas.add("ARS");
+    monedas.add("MXN");
+
+%>
+
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Registro de Usuario</title>
-
     <style>
-        body {
+              body {
             margin: 0;
             padding: 0;
             height: 100vh;
@@ -102,12 +114,11 @@
 
         <label>Moneda preferida</label>
         <select name="moneda_preferida" required>
-            <option value="COP">COP</option>
-            <option value="USD">USD</option>
-            <option value="EUR">EUR</option>
+            <% for (String moneda : monedas) { %>
+                <option value="<%= moneda %>"><%= moneda %></option>
+            <% } %>
         </select>
 
-        <!-- Por defecto quedará como cliente -->
         <input type="hidden" name="rol" value="cliente">
 
         <button type="submit">Registrar</button>

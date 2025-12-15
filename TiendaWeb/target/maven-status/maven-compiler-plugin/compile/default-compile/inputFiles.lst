@@ -1,4 +1,5 @@
 C:\Users\57304\Desktop\TiendaWeb\TiendaWeb\src\main\java\com\com\tienda\modelo\entidades\Venta.java
+C:\Users\57304\Desktop\TiendaWeb\TiendaWeb\src\main\java\com\com\com\tienda\servicios\CurrencyService.java
 C:\Users\57304\Desktop\TiendaWeb\TiendaWeb\src\main\java\com\com\tienda\modelo\entidades\Producto.java
 C:\Users\57304\Desktop\TiendaWeb\TiendaWeb\src\main\java\com\mycompany\tiendaweb\filtros\AuthFilter.java
 C:\Users\57304\Desktop\TiendaWeb\TiendaWeb\src\main\java\com\com\tienda\modelo\dao\UsuarioDAO.java
@@ -9,6 +10,7 @@ C:\Users\57304\Desktop\TiendaWeb\TiendaWeb\src\main\java\com\tiendawweb\controla
 C:\Users\57304\Desktop\TiendaWeb\TiendaWeb\src\main\java\com\tiendawweb\controladores\FacturaServlet.java
 C:\Users\57304\Desktop\TiendaWeb\TiendaWeb\src\main\java\com\tiendawweb\controladores\EliminarProducto.java
 C:\Users\57304\Desktop\TiendaWeb\TiendaWeb\src\main\java\com\com\tienda\modelo\entidades\Usuario.java
+C:\Users\57304\Desktop\TiendaWeb\TiendaWeb\src\main\java\com\tiendawweb\controladores\MonedaServlet.java
 C:\Users\57304\Desktop\TiendaWeb\TiendaWeb\src\main\java\com\com\tienda\modelo\dao\VentaDAO.java
 C:\Users\57304\Desktop\TiendaWeb\TiendaWeb\src\main\java\com\tiendawweb\controladores\ImagenProducto.java
 C:\Users\57304\Desktop\TiendaWeb\TiendaWeb\src\main\java\com\mycompany\tiendaweb\resources\JakartaEE8Resource.java

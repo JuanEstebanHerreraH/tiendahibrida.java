@@ -7,29 +7,24 @@ import com.mycompany.tiendaadmindesktop.Util.Sesion;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.nio.file.Files;
 
 public class ProductoForm extends JDialog {
 
-    private JTextField txtNombre;
+    private JTextField txtNombre, txtPrecio, txtStock;
     private JTextArea txtDescripcion;
-    private JTextField txtPrecio;
-    private JTextField txtStock;
-    private JButton btnGuardar;
-    private JButton btnImagen;
     private JLabel lblImagen;
+    private byte[] imagen;
 
     private Producto producto;
-    private boolean editando = false;
-    private byte[] imagenSeleccionada;
+    private boolean editando;
 
     // NUEVO
     public ProductoForm(JFrame parent) {
         super(parent, "Nuevo Producto", true);
-        initUI();
+        this.editando = false;
+        init();
     }
 
     // EDITAR
@@ -37,23 +32,24 @@ public class ProductoForm extends JDialog {
         super(parent, "Editar Producto", true);
         this.producto = p;
         this.editando = true;
-        initUI();
-        cargarDatos();
+        init();
+        cargar();
     }
 
-    private void initUI() {
+    private void init() {
 
-        setSize(450, 420);
+        setSize(420, 380);
         setLocationRelativeTo(getParent());
-        setLayout(new GridLayout(7, 2));
+        setLayout(new GridLayout(7, 2, 5, 5));
 
         txtNombre = new JTextField();
         txtDescripcion = new JTextArea();
         txtPrecio = new JTextField();
         txtStock = new JTextField();
-        btnGuardar = new JButton("Guardar");
-        btnImagen = new JButton("Seleccionar Imagen");
         lblImagen = new JLabel("Sin imagen");
+
+        JButton btnImg = new JButton("Imagen");
+        JButton btnGuardar = new JButton("Guardar");
 
         add(new JLabel("Nombre"));
         add(txtNombre);
@@ -68,7 +64,7 @@ public class ProductoForm extends JDialog {
         add(txtStock);
 
         add(new JLabel("Imagen"));
-        add(btnImagen);
+        add(btnImg);
 
         add(new JLabel());
         add(lblImagen);
@@ -76,81 +72,52 @@ public class ProductoForm extends JDialog {
         add(new JLabel());
         add(btnGuardar);
 
-        btnImagen.addActionListener(e -> seleccionarImagen());
+        btnImg.addActionListener(e -> imagen());
         btnGuardar.addActionListener(e -> guardar());
-
-        txtPrecio.addKeyListener(new KeyAdapter() {
-            public void keyTyped(KeyEvent e) {
-                char c = e.getKeyChar();
-                if (!Character.isDigit(c) && c != '.' && c != KeyEvent.VK_BACK_SPACE) {
-                    e.consume();
-                }
-            }
-        });
-
-        txtStock.addKeyListener(new KeyAdapter() {
-            public void keyTyped(KeyEvent e) {
-                char c = e.getKeyChar();
-                if (!Character.isDigit(c) && c != KeyEvent.VK_BACK_SPACE) {
-                    e.consume();
-                }
-            }
-        });
     }
 
-    private void seleccionarImagen() {
-
-        JFileChooser chooser = new JFileChooser();
-
-        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-            File file = chooser.getSelectedFile();
-            lblImagen.setText(file.getName());
-
-            try {
-                imagenSeleccionada = Files.readAllBytes(file.toPath());
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this,
-                    "Error al cargar imagen");
-            }
-        }
-    }
-
-    private void cargarDatos() {
+    private void cargar() {
         txtNombre.setText(producto.getNombre());
         txtDescripcion.setText(producto.getDescripcion());
         txtPrecio.setText(String.valueOf(producto.getPrecio()));
         txtStock.setText(String.valueOf(producto.getStock()));
-        imagenSeleccionada = producto.getImagenBlob();
-        if (imagenSeleccionada != null) {
-            lblImagen.setText("Imagen cargada");
+        imagen = producto.getImagenBlob();
+        if (imagen != null) lblImagen.setText("Imagen cargada");
+    }
+
+    private void imagen() {
+        JFileChooser fc = new JFileChooser();
+        if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            File f = fc.getSelectedFile();
+            lblImagen.setText(f.getName());
+            try {
+                imagen = Files.readAllBytes(f.toPath());
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error al cargar imagen");
+            }
         }
     }
 
-private void guardar() {
+    private void guardar() {
 
-    if (!editando) {
-        producto = new Producto();
+        if (!editando) producto = new Producto();
+
+        producto.setNombre(txtNombre.getText());
+        producto.setDescripcion(txtDescripcion.getText());
+        producto.setPrecio(Double.parseDouble(txtPrecio.getText()));
+        producto.setStock(Integer.parseInt(txtStock.getText()));
+        producto.setImagenBlob(imagen);
+
+        ProductoDAO dao = new ProductoDAO();
+
+        if (editando) {
+            dao.actualizar(producto);
+            LogDAO.registrar(Sesion.usuario, "EDITAR_PRODUCTO");
+        } else {
+            dao.insertar(producto);
+            LogDAO.registrar(Sesion.usuario, "CREAR_PRODUCTO");
+        }
+
+        dispose();
     }
-
-    producto.setNombre(txtNombre.getText());
-    producto.setDescripcion(txtDescripcion.getText());
-    producto.setPrecio(Double.parseDouble(txtPrecio.getText()));
-    producto.setStock(Integer.parseInt(txtStock.getText()));
-
-    if (imagenSeleccionada != null) {
-        producto.setImagenBlob(imagenSeleccionada);
-    }
-
-    ProductoDAO dao = new ProductoDAO();
-
-    if (editando) {
-        dao.actualizar(producto);
-        LogDAO.registrar(Sesion.usuario, "EDITAR_PRODUCTO");
-    } else {
-        dao.insertar(producto);
-        LogDAO.registrar(Sesion.usuario, "CREAR_PRODUCTO");
-    }
-
-    dispose();
-}
 }

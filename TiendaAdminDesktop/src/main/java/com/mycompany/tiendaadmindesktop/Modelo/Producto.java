@@ -12,7 +12,6 @@ private String imagen;
 private double subtotal;      
 private byte[] imagenBlob;
 
-
     public byte[] getImagenBlob() {
         return imagenBlob;
     }

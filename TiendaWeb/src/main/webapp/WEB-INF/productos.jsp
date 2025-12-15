@@ -41,8 +41,10 @@ h1 { text-align: center; margin: 30px 0 10px; font-size: 42px; letter-spacing: -
 
 <div class="header-links">
     <a href="NuevoProducto.jsp" class="btn">➕ Agregar Producto</a>
+    <a href="tienda" class="btn">🛒 Ir a la Tienda</a> <!-- 🔥 Botón agregado -->
     <a href="logout" class="btn btn-danger">Cerrar Sesión</a>
 </div>
+
 
 <div class="grid">
 <%

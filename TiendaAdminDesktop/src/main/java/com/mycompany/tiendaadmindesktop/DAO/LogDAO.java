@@ -1,7 +1,6 @@
 package com.mycompany.tiendaadmindesktop.DAO;
 
 import com.mycompany.tiendaadmindesktop.Modelo.Log;
-import com.mycompany.tiendaadmindesktop.Util.ConexionDB;
 import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,6 +11,7 @@ import org.apache.poi.ss.usermodel.*;
 import com.itextpdf.kernel.pdf.*;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.*;
+import com.mycompany.tiendaadmindesktop.util.ConexionDB;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class LogDAO {
 

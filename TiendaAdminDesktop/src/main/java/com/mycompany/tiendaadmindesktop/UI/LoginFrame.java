@@ -2,7 +2,6 @@ package com.mycompany.tiendaadmindesktop.UI;
 
 import com.mycompany.tiendaadmindesktop.DAO.UsuarioDAO;
 import com.mycompany.tiendaadmindesktop.DAO.LogDAO;
-import com.mycompany.tiendaadmindesktop.Util.Sesion;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,7 +24,7 @@ public class LoginFrame extends JFrame {
         txtPassword = new JPasswordField();
         btnLogin = new JButton("Ingresar");
 
-        add(new JLabel("Usuario"));
+        add(new JLabel("Email"));
         add(txtUsuario);
 
         add(new JLabel("Contraseña"));
@@ -41,29 +40,28 @@ public class LoginFrame extends JFrame {
 
     private void login() {
 
-        String usuario = txtUsuario.getText().trim();
-        String password = new String(txtPassword.getPassword());
+    String email = txtUsuario.getText().trim();
+    String password = new String(txtPassword.getPassword());
 
-        if (usuario.isEmpty() || password.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                "Completa todos los campos");
-            return;
-        }
+    if (email.isEmpty() || password.isEmpty()) {
+        JOptionPane.showMessageDialog(this,
+            "Completa todos los campos");
+        return;
+    }
 
-        UsuarioDAO dao = new UsuarioDAO();
+    UsuarioDAO dao = new UsuarioDAO();
 
-        if (dao.loginAdmin(usuario, password)) {
+    if (dao.loginAdmin(email, password)) {
 
-            // ✅ AQUÍ VAN LOS LOGS
-            Sesion.usuario = usuario;
-            LogDAO.registrar(Sesion.usuario, "LOGIN_ADMIN");
+        LogDAO.registrar(email, "LOGIN_ADMIN");
 
-            new DashboardFrame();
-            dispose();
+        DashboardFrame dashboardFrame = new DashboardFrame();
+        dispose();
 
-        } else {
-            JOptionPane.showMessageDialog(this,
-                "Credenciales inválidas o no eres admin");
-        }
+    } else {
+        JOptionPane.showMessageDialog(this,
+            "Credenciales inválidas o no eres admin");
+    }
+
     }
 }

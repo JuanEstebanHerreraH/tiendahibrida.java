@@ -19,14 +19,17 @@ public class ProductoFrame extends JFrame {
     private final DefaultTableModel modelo;
     private final TableRowSorter<DefaultTableModel> sorter;
 
-    private final JTextField txtBuscar;
+    private final JTextField txtBuscarNombre;
+    private final JTextField txtBuscarDescripcion;
     private final JButton btnNuevo;
+    private final JButton btnEditar;
     private final JButton btnEliminar;
+    private final JButton btnVolver;
 
     public ProductoFrame() {
 
         setTitle("Gestión de Productos");
-        setSize(900, 450);
+        setSize(950, 450);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -44,47 +47,50 @@ public class ProductoFrame extends JFrame {
         tabla = new JTable(modelo);
         add(new JScrollPane(tabla), BorderLayout.CENTER);
 
-        // ================= BUSCADOR =================
-        txtBuscar = new JTextField(20);
-        JLabel lblBuscar = new JLabel("Buscar:");
+        // ================= BUSCADORES =================
+        txtBuscarNombre = new JTextField(15);
+        txtBuscarDescripcion = new JTextField(15);
+
+        JLabel lblBuscarNombre = new JLabel("Buscar por nombre:");
+        JLabel lblBuscarDesc = new JLabel("Buscar por descripción:");
 
         JPanel panelTop = new JPanel();
-        panelTop.add(lblBuscar);
-        panelTop.add(txtBuscar);
+        panelTop.add(lblBuscarNombre);
+        panelTop.add(txtBuscarNombre);
+        panelTop.add(lblBuscarDesc);
+        panelTop.add(txtBuscarDescripcion);
 
         add(panelTop, BorderLayout.NORTH);
 
         sorter = new TableRowSorter<>(modelo);
         tabla.setRowSorter(sorter);
 
-        txtBuscar.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                filtrar();
-            }
+        DocumentListener listener = new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) { filtrar(); }
+            public void removeUpdate(DocumentEvent e) { filtrar(); }
+            public void changedUpdate(DocumentEvent e) { filtrar(); }
+        };
 
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                filtrar();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                filtrar();
-            }
-        });
+        txtBuscarNombre.getDocument().addDocumentListener(listener);
+        txtBuscarDescripcion.getDocument().addDocumentListener(listener);
 
         // ================= BOTONES =================
         JPanel panelBotones = new JPanel();
 
         btnNuevo = new JButton("Nuevo");
+        btnEditar = new JButton("Editar");
         btnEliminar = new JButton("Eliminar");
+        btnVolver = new JButton("Volver al menú");
 
-        btnNuevo.addActionListener(e -> abrirFormulario());
+        btnNuevo.addActionListener(e -> abrirFormularioNuevo());
+        btnEditar.addActionListener(e -> editarProducto());
         btnEliminar.addActionListener(e -> eliminarProducto());
+        btnVolver.addActionListener(e -> volverMenu());
 
         panelBotones.add(btnNuevo);
+        panelBotones.add(btnEditar);
         panelBotones.add(btnEliminar);
+        panelBotones.add(btnVolver);
 
         add(panelBotones, BorderLayout.SOUTH);
 
@@ -95,11 +101,9 @@ public class ProductoFrame extends JFrame {
     // ================= MÉTODOS =================
 
     private void cargarProductos() {
-
         modelo.setRowCount(0);
-        ProductoDAO dao = new ProductoDAO();
 
-        for (Producto p : dao.listar()) {
+        for (Producto p : new ProductoDAO().listar()) {
             modelo.addRow(new Object[]{
                 p.getId(),
                 p.getNombre(),
@@ -111,53 +115,93 @@ public class ProductoFrame extends JFrame {
     }
 
     private void filtrar() {
+        String textoNombre = txtBuscarNombre.getText().trim().toLowerCase();
+        String textoDesc = txtBuscarDescripcion.getText().trim().toLowerCase();
 
-        String texto = txtBuscar.getText();
-
-        if (texto.trim().isEmpty()) {
+        if (textoNombre.isEmpty() && textoDesc.isEmpty()) {
             sorter.setRowFilter(null);
         } else {
-            sorter.setRowFilter(
-                RowFilter.regexFilter("(?i)" + texto, 1) // columna Nombre
-            );
+            sorter.setRowFilter(new RowFilter<DefaultTableModel, Integer>() {
+                public boolean include(RowFilter.Entry<? extends DefaultTableModel, ? extends Integer> entry) {
+                    String nombre = entry.getStringValue(1).toLowerCase();
+                    String descripcion = entry.getStringValue(2).toLowerCase();
+                    boolean coincideNombre = nombre.contains(textoNombre);
+                    boolean coincideDescripcion = descripcion.contains(textoDesc);
+                    return coincideNombre && coincideDescripcion;
+                }
+            });
         }
     }
 
-    private void abrirFormulario() {
+    // ===== NUEVO =====
+    private void abrirFormularioNuevo() {
         ProductoForm form = new ProductoForm(this);
         form.setVisible(true);
         cargarProductos();
     }
 
-private void eliminarProducto() {
+    // ===== EDITAR =====
+    private void editarProducto() {
 
-    int fila = tabla.getSelectedRow();
+        int fila = tabla.getSelectedRow();
 
-    if (fila == -1) {
-        JOptionPane.showMessageDialog(this,
-            "Selecciona un producto");
-        return;
-    }
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this,
+                "Selecciona un producto para editar");
+            return;
+        }
 
-    int id = (int) tabla.getValueAt(fila, 0);
+        int id = (int) tabla.getValueAt(fila, 0);
 
-    int confirm = JOptionPane.showConfirmDialog(
-        this,
-        "¿Eliminar producto?",
-        "Confirmar",
-        JOptionPane.YES_NO_OPTION
-    );
+        Producto producto = new ProductoDAO().buscarPorId(id);
 
-    if (confirm == JOptionPane.YES_OPTION) {
-        new ProductoDAO().eliminar(id);
+        ProductoForm form = new ProductoForm(this, producto);
+        form.setVisible(true);
 
         LogDAO.registrar(
             Sesion.usuario,
-            "ELIMINAR_PRODUCTO ID=" + id
+            "EDITAR_PRODUCTO ID=" + id
         );
 
         cargarProductos();
     }
-}
 
+    // ===== ELIMINAR =====
+    private void eliminarProducto() {
+
+        int fila = tabla.getSelectedRow();
+
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this,
+                "Selecciona un producto");
+            return;
+        }
+
+        int id = (int) tabla.getValueAt(fila, 0);
+
+        int confirm = JOptionPane.showConfirmDialog(
+            this,
+            "¿Eliminar producto?",
+            "Confirmar",
+            JOptionPane.YES_NO_OPTION
+        );
+
+        if (confirm == JOptionPane.YES_OPTION) {
+
+            new ProductoDAO().eliminar(id);
+
+            LogDAO.registrar(
+                Sesion.usuario,
+                "ELIMINAR_PRODUCTO ID=" + id
+            );
+
+            cargarProductos();
+        }
+    }
+
+    // ===== VOLVER =====
+    private void volverMenu() {
+        dispose();
+        new DashboardFrame();
+    }
 }

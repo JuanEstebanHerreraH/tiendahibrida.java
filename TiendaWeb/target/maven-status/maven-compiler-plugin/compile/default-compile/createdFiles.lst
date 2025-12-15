@@ -2,11 +2,13 @@ com\com\tienda\modelo\dao\VentaDAO.class
 com\mycompany\tiendaweb\filtros\AuthFilter.class
 com\tiendawweb\controladores\Login.class
 com\tiendaweb\filtros\AdminFilter\java\AdminFilter.class
+com\tiendawweb\controladores\MonedaServlet.class
 com\tiendawweb\controladores\FacturaServlet.class
 com\tiendawweb\controladores\ProductoServlet.class
 com\com\tienda\modelo\dao\ConexionDB.class
 com\com\tienda\modelo\entidades\Producto.class
 com\tiendawweb\controladores\RegistroUsuario.class
+com\com\com\tienda\servicios\CurrencyService.class
 com\com\tienda\modelo\dao\UsuarioDAO.class
 com\tiendawweb\controladores\Logout.class
 com\mycompany\tiendaweb\resources\JakartaEE8Resource.class
