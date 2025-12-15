@@ -17,10 +17,14 @@ admin
 
 Redirección automática según rol:
 
-if (u.getRol().equals("admin")) {
+if (u.getRol().equals("admin"))
+{
+
     response.sendRedirect("productos");  // Panel admin (CRUD)
-} else {
+    }
+    else {
     response.sendRedirect("catalogo.jsp"); // Vista cliente
+    
 }
 
 2. Gestión de Productos (CRUD)
