@@ -14,17 +14,21 @@ public class DashboardFrame extends JFrame {
         JButton btnProductos = new JButton("Productos");
         JButton btnLogs = new JButton("Logs");
 
-        btnProductos.addActionListener(e ->
-            new ProductoFrame());
+        btnProductos.addActionListener(e -> {
+            new ProductoFrame();
+            dispose(); // 🔥 cierra el menú
+        });
 
-        btnLogs.addActionListener(e ->
-            new LogsFrame());
+        btnLogs.addActionListener(e -> {
+            new LogsFrame();
+            dispose(); // 🔥 cierra el menú
+        });
 
         JPanel panel = new JPanel();
         panel.add(btnProductos);
         panel.add(btnLogs);
-
         add(panel);
+
         setVisible(true);
     }
 }

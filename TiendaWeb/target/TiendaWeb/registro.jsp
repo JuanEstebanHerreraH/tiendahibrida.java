@@ -1,6 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
-<%@ page import="com.com.tienda.modelo.entidades.Usuario" %>
 
 <%
     List<String> monedas = new java.util.ArrayList<>();
@@ -9,119 +8,130 @@
     monedas.add("EUR");
     monedas.add("ARS");
     monedas.add("MXN");
-
 %>
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Registro de Usuario</title>
-    <style>
-              body {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+<meta charset="UTF-8">
+<title>Registro</title>
 
-            background: linear-gradient(135deg, #81ecec, #74b9ff);
-            font-family: "Segoe UI", Arial, sans-serif;
-        }
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: linear-gradient(135deg, #74b9ff, #81ecec);
+    }
 
-        .form-container {
-            width: 380px;
-            background: #ffffff;
-            padding: 35px 30px;
-            border-radius: 16px;
-            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
-            animation: fadeIn 0.35s ease;
-        }
+    .card {
+        width: 400px;
+        background: #fff;
+        padding: 40px 35px;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.18);
+        animation: fadeIn 0.4s ease;
+    }
 
-        h2 {
-            text-align: center;
-            margin-top: 0;
-            margin-bottom: 25px;
-            font-size: 26px;
-            color: #2d3436;
-            font-weight: 700;
-        }
+    h2 {
+        text-align: center;
+        margin-bottom: 28px;
+        font-size: 28px;
+        font-weight: 800;
+        color: #2d3436;
+    }
 
-        label {
-            font-size: 14px;
-            color: #636e72;
-            font-weight: 600;
-            margin-top: 15px;
-            display: block;
-        }
+    .input-group {
+        margin-bottom: 18px;
+    }
 
-        input, select {
-            width: 100%;
-            padding: 12px;
-            margin-top: 6px;
-            border-radius: 10px;
-            border: 2px solid #dfe6e9;
-            font-size: 15px;
-            transition: 0.25s;
-        }
+    label {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        color: #636e72;
+        margin-bottom: 6px;
+    }
 
-        input:focus, select:focus {
-            border-color: #0984e3;
-            box-shadow: 0 0 8px rgba(9,132,227,0.3);
-            outline: none;
-        }
+    input, select {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 12px;
+        border: 2px solid #dfe6e9;
+        font-size: 15px;
+        transition: 0.25s;
+    }
 
-        button {
-            width: 100%;
-            padding: 12px;
-            margin-top: 25px;
-            background: #0984e3;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.25s;
-        }
+    input:focus, select:focus {
+        border-color: #0984e3;
+        box-shadow: 0 0 10px rgba(9,132,227,0.35);
+        outline: none;
+    }
 
-        button:hover {
-            background: #0767b3;
-        }
+    button {
+        width: 100%;
+        padding: 14px;
+        margin-top: 22px;
+        border: none;
+        border-radius: 14px;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        background: linear-gradient(135deg, #0984e3, #0570c9);
+        color: white;
+        transition: 0.25s;
+    }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
+    button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 20px rgba(9,132,227,0.4);
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(14px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
 </head>
+
 <body>
 
-<div class="form-container">
-    <h2>Registro</h2>
+<div class="card">
+
+    <h2>📝 Crear cuenta</h2>
 
     <form action="registroUsuario" method="post">
 
-        <label>Nombre</label>
-        <input type="text" name="nombre" required>
+        <div class="input-group">
+            <label>👤 Nombre</label>
+            <input type="text" name="nombre" placeholder="Tu nombre completo" required>
+        </div>
 
-        <label>Email</label>
-        <input type="email" name="email" required>
+        <div class="input-group">
+            <label>📧 Correo electrónico</label>
+            <input type="email" name="email" placeholder="correo@ejemplo.com" required>
+        </div>
 
-        <label>Contraseña</label>
-        <input type="password" name="password" required>
+        <div class="input-group">
+            <label>🔐 Contraseña</label>
+            <input type="password" name="password" placeholder="••••••••" required>
+        </div>
 
-        <label>Moneda preferida</label>
-        <select name="moneda_preferida" required>
-            <% for (String moneda : monedas) { %>
-                <option value="<%= moneda %>"><%= moneda %></option>
-            <% } %>
-        </select>
+        <div class="input-group">
+            <label>💱 Moneda preferida</label>
+            <select name="moneda_preferida" required>
+                <% for (String moneda : monedas) { %>
+                    <option value="<%= moneda %>"><%= moneda %></option>
+                <% } %>
+            </select>
+        </div>
 
         <input type="hidden" name="rol" value="cliente">
 
-        <button type="submit">Registrar</button>
+        <button type="submit">✨ Registrarme</button>
     </form>
 
 </div>

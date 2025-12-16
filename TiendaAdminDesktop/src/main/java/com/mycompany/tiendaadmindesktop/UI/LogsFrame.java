@@ -15,13 +15,13 @@ public class LogsFrame extends JFrame {
 
     public LogsFrame() {
 
-
         setTitle("Auditoría del Sistema");
         setSize(800, 400);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
 
+        // ===== MODELO DE TABLA =====
         modelo = new DefaultTableModel(
             new String[]{"ID", "Usuario", "Acción", "Fecha"}, 0
         ) {
@@ -34,44 +34,60 @@ public class LogsFrame extends JFrame {
         tabla = new JTable(modelo);
         add(new JScrollPane(tabla), BorderLayout.CENTER);
 
-        cargarLogs();
-        setVisible(true);
-        
+        // ===== BOTONES SUPERIORES =====
+        JButton btnMenu = new JButton("Volver al menú");
         JButton btnExcel = new JButton("Exportar Excel");
-JPanel panelTop = new JPanel();
-panelTop.add(btnExcel);
-add(panelTop, BorderLayout.NORTH);
-btnExcel.addActionListener(e -> {
+        JButton btnPDF = new JButton("Exportar PDF");
 
-    JFileChooser chooser = new JFileChooser();
-    chooser.setSelectedFile(new File("logs.xlsx"));
+        JPanel panelTop = new JPanel();
+        panelTop.add(btnMenu);
+        panelTop.add(btnExcel);
+        panelTop.add(btnPDF);
 
-    if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-        LogDAO.exportarExcel(
-            chooser.getSelectedFile().getAbsolutePath()
-        );
-        JOptionPane.showMessageDialog(this,
-            "Logs exportados a Excel");
-    }
-});
+        add(panelTop, BorderLayout.NORTH);
 
-JButton btnPDF = new JButton("Exportar PDF");
-panelTop.add(btnPDF);
+        // ===== ACCIONES =====
+        btnMenu.addActionListener(e -> {
+            new DashboardFrame(); // volver al menú
+            dispose();            // cerrar esta ventana
+        });
 
-btnPDF.addActionListener(e -> {
+        btnExcel.addActionListener(e -> {
 
-    JFileChooser chooser = new JFileChooser();
-    chooser.setSelectedFile(new File("logs.pdf"));
+            JFileChooser chooser = new JFileChooser();
+            chooser.setSelectedFile(new File("logs.xlsx"));
 
-    if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-        LogDAO.exportarPDF(
-            chooser.getSelectedFile().getAbsolutePath()
-        );
-        JOptionPane.showMessageDialog(this,
-            "Logs exportados a PDF");
-    }
-});
+            if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+                LogDAO.exportarExcel(
+                    chooser.getSelectedFile().getAbsolutePath()
+                );
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Logs exportados a Excel"
+                );
+            }
+        });
 
+        btnPDF.addActionListener(e -> {
+
+            JFileChooser chooser = new JFileChooser();
+            chooser.setSelectedFile(new File("logs.pdf"));
+
+            if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+                LogDAO.exportarPDF(
+                    chooser.getSelectedFile().getAbsolutePath()
+                );
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Logs exportados a PDF"
+                );
+            }
+        });
+
+        // ===== CARGAR DATOS =====
+        cargarLogs();
+
+        setVisible(true);
     }
 
     private void cargarLogs() {
@@ -88,3 +104,4 @@ btnPDF.addActionListener(e -> {
         }
     }
 }
+

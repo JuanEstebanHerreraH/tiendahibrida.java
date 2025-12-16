@@ -7,7 +7,7 @@ List<Producto> detalles = (List<Producto>) request.getAttribute("detalles");
 
 // Obtener moneda del usuario o sesión
 HttpSession ses = request.getSession(false);
-String moneda = "USD"; // default
+String moneda = "USD";
 if (ses != null) {
     if (ses.getAttribute("monedaPreferida") != null) {
         moneda = (String) ses.getAttribute("monedaPreferida");
@@ -21,68 +21,187 @@ if (ses != null) {
 %>
 
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+<meta charset="UTF-8">
 <title>Factura</title>
+
 <style>
-body { font-family: Arial; background: #f5f5f5; padding: 20px; }
-.factura-box { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 10px; }
-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-table, th, td { border: 1px solid #ccc; }
-th, td { padding: 10px; text-align: center; vertical-align: middle; }
-h2 { text-align: center; }
-.total-box { text-align: right; margin-top: 20px; font-size: 20px; }
-a { text-decoration: none; color: white; background: #4CAF50; padding: 10px 15px; border-radius: 5px; }
-.producto-img { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; }
-.producto-nombre { display: flex; align-items: center; gap: 10px; }
+body {
+    margin: 0;
+    background: #f3f6fb;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.factura-box {
+    max-width: 900px;
+    margin: 40px auto;
+    background: white;
+    padding: 35px;
+    border-radius: 16px;
+    box-shadow: 0 12px 35px rgba(0,0,0,.08);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #eef2ff;
+    padding-bottom: 20px;
+    margin-bottom: 25px;
+}
+
+.header h2 {
+    margin: 0;
+    color: #243b72;
+    font-size: 32px;
+}
+
+.info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 10px;
+    margin-bottom: 25px;
+    font-size: 15px;
+}
+
+.info strong {
+    color: #333;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+thead {
+    background: #243b72;
+    color: white;
+}
+
+th, td {
+    padding: 14px;
+    text-align: center;
+}
+
+tbody tr {
+    border-bottom: 1px solid #eee;
+}
+
+tbody tr:hover {
+    background: #f2f6ff;
+}
+
+.producto {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.producto img {
+    width: 70px;
+    height: 70px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+tfoot td {
+    font-size: 20px;
+    font-weight: bold;
+    background: #e6edff;
+    border-top: 2px solid #243b72;
+}
+
+.total {
+    text-align: right;
+    margin-top: 25px;
+    font-size: 22px;
+    color: #243b72;
+}
+
+.actions {
+    margin-top: 35px;
+    text-align: center;
+}
+
+.btn {
+    display: inline-block;
+    background: #243b72;
+    color: white;
+    padding: 14px 24px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: .25s;
+}
+
+.btn:hover {
+    background: #1a2c55;
+}
 </style>
 </head>
+
 <body>
 
 <div class="factura-box">
 
-<h2>Factura de Compra</h2>
+    <div class="header">
+        <h2>🧾 Factura de Compra</h2>
+        <span>🪙 Moneda: <strong><%= moneda %></strong></span>
+    </div>
 
-<p><strong>ID Venta:</strong> <%= venta.getId() %></p>
-<p><strong>Cliente (ID Usuario):</strong> <%= venta.getIdUsuario() %></p>
-<p><strong>Fecha:</strong> <%= venta.getFecha() %></p>
+    <div class="info">
+        <div><strong>ID Venta:</strong> <%= venta.getId() %></div>
+        <div><strong>ID Cliente:</strong> <%= venta.getIdUsuario() %></div>
+        <div><strong>Fecha:</strong> <%= venta.getFecha() %></div>
+    </div>
 
-<table>
-<tr>
-    <th>Producto</th>
-    <th>Precio (<%= moneda %>)</th>
-    <th>Cantidad</th>
-    <th>Subtotal (<%= moneda %>)</th>
-</tr>
+    <table>
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
 
-<%
-double totalConvertido = 0;
-for (Producto p : detalles) { 
-    double precioConvertido = CurrencyService.convertir(p.getPrecio(), moneda);
-    double subtotalConvertido = precioConvertido * p.getStock();
-    totalConvertido += subtotalConvertido;
-%>
-<tr>
-    <td>
-        <div class="producto-nombre">
-            <img class="producto-img" src="<%= request.getContextPath() %>/ImagenProducto?id=<%= p.getId() %>" alt="<%= p.getNombre() %>">
-            <span><%= p.getNombre() %></span>
-        </div>
-    </td>
-    <td><%= String.format("%.2f", precioConvertido) %> <%= moneda %></td>
-    <td><%= p.getStock() %></td>
-    <td><%= String.format("%.2f", subtotalConvertido) %> <%= moneda %></td>
-</tr>
-<% } %>
-</table>
+        <tbody>
+        <%
+        double totalConvertido = 0;
+        for (Producto p : detalles) {
+            double precioConvertido = CurrencyService.convertir(p.getPrecio(), moneda);
+            double subtotal = precioConvertido * p.getStock();
+            totalConvertido += subtotal;
+        %>
+            <tr>
+                <td>
+                    <div class="producto">
+                        <img src="<%= request.getContextPath() %>/ImagenProducto?id=<%= p.getId() %>">
+                        <strong><%= p.getNombre() %></strong>
+                    </div>
+                </td>
+                <td><%= String.format("%.2f", precioConvertido) %> <%= moneda %></td>
+                <td><%= p.getStock() %></td>
+                <td><%= String.format("%.2f", subtotal) %> <%= moneda %></td>
+            </tr>
+        <% } %>
+        </tbody>
 
-<div class="total-box">
-    <strong>Total: <%= String.format("%.2f", totalConvertido) %> <%= moneda %></strong>
-</div>
+        <tfoot>
+            <tr>
+                <td colspan="3">💰 Total</td>
+                <td><%= String.format("%.2f", totalConvertido) %> <%= moneda %></td>
+            </tr>
+        </tfoot>
+    </table>
 
-<br>
-
-<a href="<%= request.getContextPath() %>/tienda">Volver a la tienda</a>
+    <div class="actions">
+        <a class="btn" href="<%= request.getContextPath() %>/tienda">
+            🛍️ Volver a la tienda
+        </a>
+    </div>
 
 </div>
 
