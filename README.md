@@ -1,90 +1,67 @@
-🛒 Tienda Web Pro - E-commerce Full Stack & Cloud Deploy
-Una aplicación robusta de comercio electrónico de extremo a extremo. Combina un Backend en Java (Jakarta EE), una interfaz administrativa Swing, y una arquitectura moderna desplegada en la nube utilizando AWS (Elastic Beanstalk, RDS, EC2) y Docker.
+🛒 Tienda Web Pro: Full-Stack Cloud E-commerce
+Arquitectura empresarial distribuida con Java 17/22, Docker y Despliegue en AWS
 
-🚀 Novedades de Infraestructura (Cloud & DevOps)
-Esta versión marca la transición de un entorno local a una arquitectura Cloud Native:
+Este proyecto representa la evolución de una aplicación monolítica local hacia una infraestructura Cloud-Native, integrando servicios gestionados de Amazon Web Services y orquestación por contenedores.
 
-Despliegue en AWS: Implementación exitosa en AWS Elastic Beanstalk utilizando instancias EC2.
+🏗️ Arquitectura del Ecosistema
+El sistema utiliza una topología híbrida para garantizar seguridad y escalabilidad:
 
-Dockerización: Inclusión de Dockerfile y Dockerrun.aws.json para despliegues consistentes y escalables en contenedores.
+Capa Web (Cloud): Backend en Jakarta EE (JSP/Servlets) desplegado en AWS Elastic Beanstalk bajo contenedores Docker.
 
-Base de Datos Gestionada: Migración de SQL Server local a Amazon RDS (MS SQL Server).
+Capa Administrativa (Desktop): Panel de control desarrollado en Java Swing que interactúa mediante JDBC con el endpoint de producción.
 
-Seguridad Inyectada: Uso de Variables de Entorno para proteger credenciales sensibles (DB_HOST, DB_PASS), evitando el "hardcoding" de contraseñas en el código fuente.
+Capa de Datos (Managed): Instancia de Amazon RDS (MS SQL Server) configurada con reglas de firewall específicas en Security Groups.
 
-Automatización: Uso de Python y scripts de terminal para la automatización de tareas de instalación y configuración en el entorno de servidor.
+🌟 Logros de Ingeniería (Cloud & DevOps)
+☁️ Infraestructura como Servicio (AWS)
+Elastic Beanstalk: Gestión automatizada del ciclo de vida de la aplicación y auto-escalado en instancias EC2.
 
-✅ Funcionalidades Principales
-1. Autenticación y Seguridad Cloud
-Inicio de sesión con roles diferenciados (Admin/Cliente).
+Amazon RDS: Migración y mantenimiento de esquemas relacionales en la nube, eliminando la dependencia de servidores locales.
 
-Conexión cifrada a la base de datos RDS mediante cadenas de conexión dinámicas.
+Networking: Configuración de conectividad remota segura a través del puerto 1433.
 
-2. Gestión Administrativa (Híbrida)
-Panel Web: CRUD de productos desde el navegador.
+🐳 Contenedores y Automatización
+Dockerization: Implementación de Dockerfile para estandarizar el entorno de ejecución en Tomcat 10+.
 
-Panel Desktop (Swing): Administración avanzada desde el escritorio, conectada por JDBC al endpoint de AWS.
+AWS Orchestration: Uso de Dockerrun.aws.json para la definición de despliegues multi-contenedor.
 
-3. Carrito y Stock Inteligente
-Gestión de inventario en tiempo real sincronizada en la nube.
+Scripts de Soporte: Utilización de Python para tareas de automatización en el CMD/Terminal durante la fase de instalación.
 
-Persistencia de carrito por usuario en SQL Server RDS.
+🛡️ Seguridad de Grado Profesional
+Ocultación de Credenciales: Implementación de Variables de Entorno (System.getenv) para inyectar datos sensibles en tiempo de ejecución, protegiendo el código fuente en GitHub de posibles fugas de información.
 
-🛠 Tecnologías Utilizadas
-Lenguajes: Java 17/22, SQL, Python (scripts de automatización).
+Migración Jakarta: Transición exitosa de librerías javax.* a jakarta.* para garantizar compatibilidad con servidores de aplicaciones modernos.
 
-Web: Jakarta EE, JSP, Servlets, JSTL, Tomcat 10.1.x.
+⚙️ Configuración y Ejecución Local
+Para vincular el panel administrativo con la base de datos en AWS, es necesario configurar las siguientes variables de entorno en el sistema operativo:
 
-Cloud & DevOps:
+Bash
 
-AWS: Elastic Beanstalk, RDS (SQL Server), EC2.
+# Credenciales de conexión (No modificar en el código)
+export DB_HOST="tienda-db.ch4qkweu698j.us-east-2.rds.amazonaws.com"
+export DB_PORT="1433"
+export DB_NAME="tienda_db"
+export DB_USER="tienda_app"
+export DB_PASS="tu_contraseña_segura"
+Flujo de Compilación
+Maven: mvn clean install para generar el artefacto .war actualizado.
 
-Containers: Docker, Multi-container Docker (Dockerrun.aws.json).
+Docker: docker build -t tienda-web-app .
 
-Herramientas: Maven, Git, SQL Server Management Studio (SSMS).
+🚀 Roadmap de Desarrollo
+[ ] Integración de BCrypt para el hash de credenciales de usuario.
 
-🗄 Migración de Base de Datos (AWS RDS)
-Para replicar el entorno, utiliza el script de migración de tablas incluyendo IDENTITY para el manejo de IDs autoincrementables:
+[ ] Implementación de pasarela de pagos simulada.
 
-SQL
+[ ] Dashboard de analítica de ventas con reportes en PDF.
 
--- Tabla de productos con soporte para imágenes BLOB
-CREATE TABLE productos (
+Desarrollado por Juan Esteban Herrera Herrera Ingeniería de Software | Cloud & Java Developer
 
-    id INT PRIMARY KEY IDENTITY(1,1),
-    nombre VARCHAR(100),
-    precio FLOAT,
-    stock INT,
-    imagen_blob VARBINARY(MAX)
-    
-);
-🔌 Configuración de Conexión Segura
-El archivo ConexionDB.java ahora es seguro para compartir en GitHub, ya que consume las variables configuradas en el Security Group y el panel de Elastic Beanstalk:
+Instrucciones para pegar:
+En tu GitHub, entra a editar el README.md.
 
-Java
+Borra todo el contenido anterior.
 
-// Ejemplo de lectura de variables de entorno en AWS/Local
-private static final String HOST = System.getenv("DB_HOST");
-private static final String PASS = System.getenv("DB_PASS");
-private static final String URL = "jdbc:sqlserver://" + HOST + ":1433;databaseName=tienda_db;";
-📦 Despliegue con Docker y AWS
-El proyecto incluye los archivos necesarios para la orquestación en la nube:
+Pega este bloque completo.
 
-
-Dockerfile: Define la imagen de Tomcat y la inyección del archivo .war.
-
-Dockerrun.aws.json: Archivo de configuración para que AWS Elastic Beanstalk sepa cómo desplegar los contenedores y gestionar los puertos.
-
-pom.xml: Configuración de Maven para la compilación de dependencias de Jakarta EE y drivers de SQL Server.
-
-▶️ Cómo Ejecutar
-Variables de Entorno: Configura en tu sistema (o en el panel de AWS) las variables: DB_HOST, DB_NAME, DB_USER, DB_PASS, DB_PORT.
-
-Compilar: Ejecuta mvn clean install para generar el archivo .war.
-
-Docker: docker build -t tienda-web .
-
-AWS: Sube el archivo .war o el Dockerrun.aws.json a tu entorno de Elastic Beanstalk.
-
-Desarrollado por Juan Esteban Herrera Herrera Proyecto
-enfocado en la implementación de arquitecturas Java empresariales y despliegue profesional en la nube.
+Presiona "Commit changes...".
