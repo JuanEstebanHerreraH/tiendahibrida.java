@@ -1,261 +1,90 @@
-🛒 Tienda Web - E-commerce con Java, Jakarta EE, JSP, Servlets, SQL Server & Swing Admin Panel
+🛒 Tienda Web Pro - E-commerce Full Stack & Cloud Deploy
+Una aplicación robusta de comercio electrónico de extremo a extremo. Combina un Backend en Java (Jakarta EE), una interfaz administrativa Swing, y una arquitectura moderna desplegada en la nube utilizando AWS (Elastic Beanstalk, RDS, EC2) y Docker.
 
-Una aplicación web completa de comercio electrónico desarrollada con Java 17/22, Jakarta EE, JSP, Servlets, Maven, Tomcat 10, SQL Server, y un panel administrativo de escritorio en Java Swing.
+🚀 Novedades de Infraestructura (Cloud & DevOps)
+Esta versión marca la transición de un entorno local a una arquitectura Cloud Native:
 
-Esta versión incluye mejoras en el carrito de compras, gestión de stock, filtrado por categorías y un frontend moderno y responsive.
+Despliegue en AWS: Implementación exitosa en AWS Elastic Beanstalk utilizando instancias EC2.
+
+Dockerización: Inclusión de Dockerfile y Dockerrun.aws.json para despliegues consistentes y escalables en contenedores.
+
+Base de Datos Gestionada: Migración de SQL Server local a Amazon RDS (MS SQL Server).
+
+Seguridad Inyectada: Uso de Variables de Entorno para proteger credenciales sensibles (DB_HOST, DB_PASS), evitando el "hardcoding" de contraseñas en el código fuente.
+
+Automatización: Uso de Python y scripts de terminal para la automatización de tareas de instalación y configuración en el entorno de servidor.
 
 ✅ Funcionalidades Principales
-1. Autenticación y Roles
+1. Autenticación y Seguridad Cloud
+Inicio de sesión con roles diferenciados (Admin/Cliente).
 
-Registro e inicio de sesión con validación.
+Conexión cifrada a la base de datos RDS mediante cadenas de conexión dinámicas.
 
-Roles de usuario:
+2. Gestión Administrativa (Híbrida)
+Panel Web: CRUD de productos desde el navegador.
 
-cliente
+Panel Desktop (Swing): Administración avanzada desde el escritorio, conectada por JDBC al endpoint de AWS.
 
-admin
+3. Carrito y Stock Inteligente
+Gestión de inventario en tiempo real sincronizada en la nube.
 
-Redirección automática según rol:
+Persistencia de carrito por usuario en SQL Server RDS.
 
-if (u.getRol().equals("admin"))
-{
+🛠 Tecnologías Utilizadas
+Lenguajes: Java 17/22, SQL, Python (scripts de automatización).
 
-    response.sendRedirect("productos");  // Panel admin (CRUD)
-    }
-    else {
-    response.sendRedirect("catalogo.jsp"); // Vista cliente
-    
-}
+Web: Jakarta EE, JSP, Servlets, JSTL, Tomcat 10.1.x.
 
-2. Gestión de Productos (CRUD)
+Cloud & DevOps:
 
-Administración vía Swing Desktop y panel web.
+AWS: Elastic Beanstalk, RDS (SQL Server), EC2.
 
-CRUD completo: agregar, actualizar, eliminar productos.
+Containers: Docker, Multi-container Docker (Dockerrun.aws.json).
 
-Filtrado dinámico por categorías.
+Herramientas: Maven, Git, SQL Server Management Studio (SSMS).
 
-Validación de stock y cantidad en el carrito.
+🗄 Migración de Base de Datos (AWS RDS)
+Para replicar el entorno, utiliza el script de migración de tablas incluyendo IDENTITY para el manejo de IDs autoincrementables:
 
-Imágenes guardadas como BLOB o como nombre de archivo.
+SQL
 
-3. Carrito de Compras
-
-Agregar productos respetando el stock disponible.
-
-Actualizar cantidades con límites según stock.
-
-Eliminar productos individualmente.
-
-Cálculo de subtotal por producto y total general.
-
-Visualización dinámica en JSP con diseño moderno y responsive.
-
-4. Arquitectura y Conexión
-
-Arquitectura en capas: DAO, Entidades, Servlets, JSP.
-
-Conexión a SQL Server con JDBC.
-
-Migración completa de javax → jakarta para Tomcat 10.
-
-Código limpio, mantenible y escalable.
-
-🚀 Tecnologías Utilizadas
-Backend:
-
-Java 17/22
-
-Jakarta EE (Servlet API)
-
-JSP + JSTL
-
-JDBC
-
-Maven
-
-Tomcat 10.1.x
-
-SQL Server 2019
-
-Frontend:
-
-HTML5
-
-CSS3
-
-JSP + JSTL
-
-Diseño responsive
-
-Base de Datos:
-
-SQL Server con autenticación Windows (integratedSecurity=true)
-
-🗄 Base de Datos
-SQL para la creación de tablas:
-
+-- Tabla de productos con soporte para imágenes BLOB
 CREATE TABLE productos (
 
     id INT PRIMARY KEY IDENTITY(1,1),
     nombre VARCHAR(100),
-    descripcion VARCHAR(200),
     precio FLOAT,
     stock INT,
-    categoria VARCHAR(50),
-    imagen VARCHAR(300),
     imagen_blob VARBINARY(MAX)
     
 );
+🔌 Configuración de Conexión Segura
+El archivo ConexionDB.java ahora es seguro para compartir en GitHub, ya que consume las variables configuradas en el Security Group y el panel de Elastic Beanstalk:
 
-CREATE TABLE usuarios (
+Java
 
-    id INT PRIMARY KEY IDENTITY(1,1),
-    nombre VARCHAR(100),
-    email VARCHAR(100),
-    password VARCHAR(100),
-    rol VARCHAR(20) NOT NULL DEFAULT 'cliente'
-    
-);
-
-CREATE TABLE Carrito (
-
-    id_usuario INT,
-    id_producto INT,
-    cantidad INT,
-    PRIMARY KEY(id_usuario, id_producto),
-    FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
-    FOREIGN KEY (id_producto) REFERENCES productos(id)
-    
-);
-
-CREATE TABLE ventas (
-
-    id INT PRIMARY KEY IDENTITY(1,1),
-    id_usuario INT,
-    id_producto INT,
-    cantidad INT,
-    fecha DATETIME,
-    FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
-    FOREIGN KEY (id_producto) REFERENCES productos(id)
-    
-);
-
-Convertir un usuario en administrador:
-UPDATE usuarios SET rol = 'admin' WHERE email = 'admin@tienda.com';
-
-🔌 Conexión a SQL Server (ConexionDB.java)
-
-private static final String URL = "jdbc:sqlserver://localhost:1433;"
-
-        + "databaseName=tienda_db;"
-        + "encrypt=false;"
-        + "trustServerCertificate=true;"
-        + "integratedSecurity=true;";
-
-public static Connection getConexion() {
-
-    try {
-        Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-        return DriverManager.getConnection(URL);
-    } catch (Exception e) {
-        System.out.println("Error al conectar: " + e.getMessage());
-        return null;
-    }
-    
-}
-
-🌐 Principales Servlets
-
-LoginServlet: Autenticación + Roles
-
-CarritoServlet: Gestión del carrito (agregar, actualizar, eliminar, vaciar, comprar)
-
-HomeServlet / TiendaServlet: Listado de productos y filtrado por categorías
-
-Validaciones importantes:
-
-El botón "Agregar al carrito" solo es visible si el usuario está logueado.
-
-Mensaje de advertencia si no tiene sesión activa.
-
-Stock limitado y respetado en todo momento.
-
-🎨 Vistas JSP
-
-tienda.jsp / catalogo.jsp: Catálogo dinámico con filtrado por categoría y carga de imágenes desde BLOB.
-
-verCarrito.jsp: Carrito dinámico con actualización de cantidades y opción para eliminar productos.
-
-formularioNuevoProducto.jsp: Registro de productos con CSS moderno y responsive.
-
-⚙ Migración a Tomcat 10
-
-Todos los imports javax.* reemplazados por jakarta.*.
-
-Compatible 100% con Tomcat 10.1.x (no funciona en Tomcat 9).
-
-💻 Panel Administrativo Desktop
-
-Aplicación en Java Swing para administración de productos.
-
-Actualmente en desarrollo: aún no tiene archivo EXE.
-
-Próximos módulos: BCRPY, File, y otras funcionalidades para administración avanzada.
-
-▶️ Cómo Ejecutar el Proyecto
-
-Importar el proyecto en NetBeans o IntelliJ como proyecto Maven.
-
-Instalar dependencias:
-
-mvn clean install
+// Ejemplo de lectura de variables de entorno en AWS/Local
+private static final String HOST = System.getenv("DB_HOST");
+private static final String PASS = System.getenv("DB_PASS");
+private static final String URL = "jdbc:sqlserver://" + HOST + ":1433;databaseName=tienda_db;";
+📦 Despliegue con Docker y AWS
+El proyecto incluye los archivos necesarios para la orquestación en la nube:
 
 
-Configurar Tomcat 10.
+Dockerfile: Define la imagen de Tomcat y la inyección del archivo .war.
 
-Ejecutar en navegador:
+Dockerrun.aws.json: Archivo de configuración para que AWS Elastic Beanstalk sepa cómo desplegar los contenedores y gestionar los puertos.
 
-Tienda Web
+pom.xml: Configuración de Maven para la compilación de dependencias de Jakarta EE y drivers de SQL Server.
 
-Login
+▶️ Cómo Ejecutar
+Variables de Entorno: Configura en tu sistema (o en el panel de AWS) las variables: DB_HOST, DB_NAME, DB_USER, DB_PASS, DB_PORT.
 
-Productos (Admin)
+Compilar: Ejecuta mvn clean install para generar el archivo .war.
 
-Catálogo (Cliente)
+Docker: docker build -t tienda-web .
 
-📌 Estado Actual
+AWS: Sube el archivo .war o el Dockerrun.aws.json a tu entorno de Elastic Beanstalk.
 
-✅ Arquitectura en capas.
-
-✅ JSP + Servlets funcionales.
-
-✅ CRUD de productos operativo.
-
-✅ Inicio de sesión + roles admin/cliente.
-
-✅ Carrito de compras: agregar, actualizar, eliminar productos.
-
-✅ Catálogo dinámico con filtrado por categoría.
-
-✅ Stock respetado.
-
-✅ Conexión a SQL Server estable.
-
-✅ Migración completa a Tomcat 10.
-
-✅ Panel Administrativo en Java Swing.
-
-✅ Imágenes de productos cargadas desde BLOB.
-
-🧩 Próximos Módulos
-
-Conversión automática (API de tasas de cambio).
-
-Reportes de ventas.
-
-📜 Licencia
-
-Desarrollado por Juan Esteban Herrera Herrera
-
-Código libre para estudio, práctica e investigación.
+Desarrollado por Juan Esteban Herrera Herrera Proyecto
+enfocado en la implementación de arquitecturas Java empresariales y despliegue profesional en la nube.
