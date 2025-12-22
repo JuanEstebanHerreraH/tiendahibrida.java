@@ -5,12 +5,13 @@ package com.com.tienda.modelo.entidades;
 import com.com.tienda.modelo.dao.ConexionDB;
 import com.com.tienda.modelo.dao.ProductoDAO;
 import java.sql.Connection;
+import java.sql.SQLException;
 
 
 public class ComTiendaModeloEntidades {
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
        ProductoDAO dao = new ProductoDAO();
     System.out.println(dao.listar());
     

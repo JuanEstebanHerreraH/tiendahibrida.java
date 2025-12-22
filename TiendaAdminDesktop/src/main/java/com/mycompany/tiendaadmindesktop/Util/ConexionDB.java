@@ -6,16 +6,22 @@ import java.sql.SQLException;
 
 public class ConexionDB {
 
+    // Leemos las variables que configuraste en el panel de AWS
+    private static final String HOST = System.getenv("DB_HOST");
+    private static final String DATABASE = System.getenv("DB_NAME");
+    private static final String USER = System.getenv("DB_USER");
+    private static final String PASS = System.getenv("DB_PASS");
+    private static final String PORT = System.getenv("DB_PORT");
+
     private static final String URL =
-        "jdbc:sqlserver://localhost:1433;"
-      + "databaseName=tienda_db;"
+        "jdbc:sqlserver://" + HOST + ":" + PORT + ";"
+      + "databaseName=" + DATABASE + ";"
       + "encrypt=false;"
       + "trustServerCertificate=true;"
-      + "user=tienda_app;"
-      + "password=tienda2024;";
+      + "user=" + USER + ";"
+      + "password=" + PASS + ";";
 
     public static Connection getConnection() {
-
         try {
             return DriverManager.getConnection(URL);
         } catch (SQLException e) {

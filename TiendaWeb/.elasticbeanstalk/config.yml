@@ -1,0 +1,5 @@
+branch-defaults:
+  default:
+    environment: tiendaweb-env
+global:
+  profile: null

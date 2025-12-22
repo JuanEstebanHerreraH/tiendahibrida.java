@@ -4,8 +4,10 @@
 /build/
 /out/
 
-# Archivos de configuración locales
+# Archivos de configuración y despliegue (IMPORTANTE)
 .env
+Dockerfile
+Dockerrun.aws.json
 
 # IDE específicos
 *.iml

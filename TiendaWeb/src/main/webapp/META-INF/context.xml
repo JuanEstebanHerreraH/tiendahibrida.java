@@ -1,2 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context path="/TiendaWeb"/>
+<Context>
+
+    <Resource
+        name="jdbc/TiendaDB"
+        auth="Container"
+        type="javax.sql.DataSource"
+        factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
+        driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+        url="jdbc:sqlserver://tienda-db.ch4qkweu698j.us-east-2.rds.amazonaws.com:1433;databaseName=tienda_db;encrypt=true;trustServerCertificate=true"
+        username="tienda_app"
+        password="123SFCC!!"
+        maxActive="20"
+        maxIdle="5"
+        maxWait="10000"/>
+
+</Context>
+
