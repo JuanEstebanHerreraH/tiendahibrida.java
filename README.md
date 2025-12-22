@@ -277,16 +277,6 @@ Notas:
 
 ---
 
-## Cómo actualizar este README en GitHub
-1. Entra al repositorio en GitHub.
-2. Abre `README.md`.
-3. Haz clic en el lápiz (editar).
-4. Selecciona todo el contenido anterior y bórralo.
-5. Pega el contenido completo de este README.
-6. Escribe un mensaje de commit y presiona "Commit changes".
-
----
-
 ## Licencia y autor
 Desarrollado por Juan Esteban Herrera Herrera — Ingeniería de Software | Cloud & Java Developer  
 Código libre para estudio, práctica e investigación.
